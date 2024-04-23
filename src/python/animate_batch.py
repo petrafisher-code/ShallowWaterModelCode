@@ -19,10 +19,13 @@ from create_map import create_map_func
 # pylint: disable=E0611
 # (pylint can't find Dataset in the netCDF4 package for some reason)
 from netCDF4 import Dataset as NetCDFFile
+from animate_output import nc, lons, lats, vort, time
 
 matplotlib.use("Agg")
 
 warnings.filterwarnings("ignore")
+
+# TODO: FIX AND TEST THIS MODULE pylint: disable=W0511
 
 username = getpass.getuser()
 
@@ -41,16 +44,6 @@ fileNames = [
     ]
     for i in range(len(u_jet))
 ]
-
-nc = NetCDFFile(fileNames[0][0])
-lons = nc.variables["phi"][:]
-lats = nc.variables["theta"][:]
-vort = nc.variables["vort"][:]
-h = nc.variables["h"][:]
-v = nc.variables["v"][:]
-time = nc.variables["time"][:]
-nc.close()
-
 
 f = plt.figure(figsize=(10, 10))
 TOT = len(u_jet) * len(c_vis)
