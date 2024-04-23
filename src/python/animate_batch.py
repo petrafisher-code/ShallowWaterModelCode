@@ -14,7 +14,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-from mpl_toolkits.basemap import Basemap
+from create_map import create_map_func
 
 # pylint: disable=E0611
 # (pylint can't find Dataset in the netCDF4 package for some reason)
@@ -71,25 +71,8 @@ for it1 in range(3, len(time) + 1, 4):
                 nc = NetCDFFile(fileNames[i][j])
                 vort = nc.variables["vort"][:]
                 nc.close()
-                # set up orthographic map projection with
-                # perspective of satellite looking down at 50N, 100W.
-                # use low resolution coastlines.
-                basemap = Basemap(
-                    satellite_height=3000000,
-                    projection="nsper",
-                    lat_0=90,
-                    lon_0=-100,
-                    resolution="l",
-                )
-                # draw the edge of the map projection region (the projection limb)
-                # draw lat/lon grid lines every 30 degrees.
-                basemap.drawmeridians(np.arange(0, 360, 30))
-                basemap.drawparallels(np.arange(-90, 90, 30))
-
-                (lo, la) = np.meshgrid(lons, lats)
-                x, y = basemap(lo * 180.0 / np.pi, la * 180.0 / np.pi)
-                # contour data over the map.
-                # cs = basemap.contour(x,y,wave+mean,15,linewidths=1.5)
+                # set up orthographic map projection
+                x, y, basemap = create_map_func(lons, lats)
                 # contour data over the map.
                 # cs = basemap.contour(x,y,wave+mean,15,linewidths=1.5)
                 cs1 = basemap.pcolor(x, y, vort[it, :, :], cmap="jet")

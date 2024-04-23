@@ -13,9 +13,8 @@ import warnings
 
 import matplotlib
 import matplotlib.pyplot as plt
-import numpy as np
 
-from mpl_toolkits.basemap import Basemap
+from create_map import create_map_func
 
 # pylint: disable=E0611
 # (pylint can't find Dataset in the netCDF4 package for some reason)
@@ -48,23 +47,8 @@ for it1 in range(3, len(time) + 1, 4):
     f = plt.figure()
 
     ax1 = f.add_subplot(141)
-    # set up orthographic map projection with
-    # perspective of satellite looking down at 50N, 100W.
-    # use low resolution coastlines.
-    basemap = Basemap(
-        satellite_height=3000000,
-        projection="nsper",
-        lat_0=90,
-        lon_0=-100,
-        resolution="l",
-    )
-    # draw the edge of the map projection region (the projection limb)
-    # draw lat/lon grid lines every 30 degrees.
-    basemap.drawmeridians(np.arange(0, 360, 30))
-    basemap.drawparallels(np.arange(-90, 90, 30))
-
-    (lo, la) = np.meshgrid(lons, lats)
-    x, y = basemap(lo * 180.0 / np.pi, la * 180.0 / np.pi)
+    # set up orthographic map projection
+    x, y, basemap = create_map_func(lons, lats)
     # contour data over the basemap.
     # cs = basemap.contour(x,y,wave+mean,15,linewidths=1.5)
     cs1 = basemap.pcolor(
@@ -77,21 +61,8 @@ for it1 in range(3, len(time) + 1, 4):
     ax1.set_title(f"Height at \n t={time[it]/86400:.2f} days")
 
     ax2 = f.add_subplot(142)
-    # set up orthographic map projection with
-    # perspective of satellite looking down at 50N, 100W.
-    # use low resolution coastlines.
-    basemap = Basemap(
-        satellite_height=3000000,
-        projection="nsper",
-        lat_0=90,
-        lon_0=-100,
-        resolution="l",
-    )
-    # draw the edge of the map projection region (the projection limb)
-    # draw lat/lon grid lines every 30 degrees.
-    basemap.drawmeridians(np.arange(0, 360, 30))
-    basemap.drawparallels(np.arange(-90, 90, 30))
-
+    # set up orthographic map projection
+    x, y, basemap = create_map_func(lons, lats)
     # contour data over the basemap.
     # cs = basemap.contour(x,y,wave+mean,15,linewidths=1.5)
     cs2 = basemap.pcolor(
@@ -104,21 +75,8 @@ for it1 in range(3, len(time) + 1, 4):
     ax2.set_title("Vorticity")
 
     ax3 = f.add_subplot(143)
-    # set up orthographic map projection with
-    # perspective of satellite looking down at 50N, 100W.
-    # use low resolution coastlines.
-    basemap = Basemap(
-        satellite_height=3000000,
-        projection="nsper",
-        lat_0=90,
-        lon_0=-100,
-        resolution="l",
-    )
-    # draw the edge of the map projection region (the projection limb)
-    # draw lat/lon grid lines every 30 degrees.
-    basemap.drawmeridians(np.arange(0, 360, 30))
-    basemap.drawparallels(np.arange(-90, 90, 30))
-
+    # set up orthographic map projection
+    x, y, basemap = create_map_func(lons, lats)
     # contour data over the basemap.
     # cs = basemap.contour(x,y,wave+mean,15,linewidths=1.5)
     cs3 = basemap.pcolor(x, y, v[it, :, :], cmap="jet", shading="auto", vmin=-7, vmax=7)
@@ -127,21 +85,8 @@ for it1 in range(3, len(time) + 1, 4):
     ax3.set_title("v")
 
     ax4 = f.add_subplot(144)
-    # set up orthographic map projection with
-    # perspective of satellite looking down at 50N, 100W.
-    # use low resolution coastlines.
-    basemap = Basemap(
-        satellite_height=3000000,
-        projection="nsper",
-        lat_0=90,
-        lon_0=-100,
-        resolution="l",
-    )
-    # draw the edge of the map projection region (the projection limb)
-    # draw lat/lon grid lines every 30 degrees.
-    basemap.drawmeridians(np.arange(0, 360, 30))
-    basemap.drawparallels(np.arange(-90, 90, 30))
-
+    # set up orthographic map projection
+    x, y, basemap = create_map_func(lons, lats)
     # contour data over the basemap.
     # cs = basemap.contour(x,y,wave+mean,15,linewidths=1.5)
     cs4 = basemap.pcolor(
