@@ -51,7 +51,7 @@ for it1 in range(3, len(time) + 1, 4):
     x, y, basemap = create_map_func(lons, lats)
     # contour data over the basemap
     cs1 = basemap.pcolor(
-        x, y, h[it, :, :], cmap="jet", shading="auto", vmin=60000, vmax=65000
+        x, y, h[it, :, :], cmap="jet", shading="auto", vmin=60000, vmax=64000
     )
     cbar = basemap.colorbar(location="bottom")
     cbar.ax.set_xticks(cbar.ax.get_xticks())
