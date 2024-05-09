@@ -13,7 +13,7 @@ import warnings
 
 import matplotlib
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
+from matplotlib import ticker
 
 from create_map import create_map_func
 
