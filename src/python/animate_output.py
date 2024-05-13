@@ -123,8 +123,33 @@ for it1 in range(4, len(time) + 1, 4):
     plt.suptitle(f"t={time[it]/86400:.2f} days", fontsize=8, y=0.25)
     plt.savefig(f"../../output/frames/frame{ITER:03d}.png", format="png", dpi=300)
 
+
+def safe_ffmpeg_call(args):
+    """
+    Execute an ffmpeg command safely.
+
+    This function validates the command to be executed against a list of allowed commands
+    before invoking subprocess.run() to execute it.
+
+    Parameters:
+        args (list): A list containing the command and its arguments.
+
+    Raises:
+        ValueError: If the command is not in the list of allowed commands.
+    """
+    # List of allowed ffmpeg commands
+    allowed_commands = ["ffmpeg"]
+
+    # Check if the command is in the allowed list
+    if args[0] not in allowed_commands:
+        raise ValueError("Unsafe command detected.")
+
+    # Execute the command
+    subprocess.run(args, check=True)
+
+
 # Call ffmpeg to create mp4 animation
-subprocess.run(
+safe_ffmpeg_call(
     [
         "ffmpeg",
         "-r",
@@ -142,17 +167,15 @@ subprocess.run(
         "-pix_fmt",
         "yuv420p",
         "../../output/animations/animation.mp4",
-    ],
-    check=True,
+    ]
 )
 
 # Call ffmpeg to convert mp4 to gif
-subprocess.run(
+safe_ffmpeg_call(
     [
         "ffmpeg",
         "-i",
         "../../output/animations/animation.mp4",
         "../../output/animations/animation.gif",
-    ],
-    check=True,
+    ]
 )
