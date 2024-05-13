@@ -41,72 +41,71 @@ if not os.path.exists("../../output/frames"):
 if not os.path.exists("../../output/animations"):
     os.mkdir("../../output/animations")
 
+
+def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, title_var):
+    """
+    Generate an individual map plot with specified colorbar settings and labels.
+
+    Parameters:
+        data : array
+            The data array to be plotted.
+        ax : matplotlib.axes.Axes
+            The axes to draw the map on.
+        vmin_var : float
+            The minimum value for the colorbar.
+        vmax_var : float
+            The maximum value for the colorbar.
+        colourbar_label_var : str
+            The label for the colorbar.
+        title_var : str
+            The title of the plot.
+
+    Returns:
+        ax : matplotlib.axes.Axes
+            The modified axes containing the map plot.
+    """
+    # set up orthographic map projection
+    x, y, basemap = create_map_func(lons, lats)
+    # contour data over the basemap
+    basemap.pcolor(x, y, data, cmap="jet", shading="auto", vmin=vmin_var, vmax=vmax_var)
+    cbar = basemap.colorbar(location="bottom")
+    cbar.ax.set_xticks(cbar.ax.get_xticks())
+    cbar.ax.set_xticklabels(
+        cbar.ax.get_xticklabels(), rotation="horizontal", fontsize=8
+    )
+
+    # Format colorbar tick labels using scientific notation
+    formatter = ticker.ScalarFormatter(useMathText=True)
+    formatter.set_powerlimits((-3, 3))
+    cbar.ax.xaxis.set_major_formatter(formatter)
+    power_text = cbar.ax.xaxis.get_offset_text()
+    power_text.set_size(8)
+
+    # Set label and title
+    cbar.set_label(colourbar_label_var, fontsize=8)
+    ax.set_title(title_var, fontsize=8)
+
+    return ax
+
+
 ITER = 0
-for it1 in range(3, len(time) + 1, 4):
+for it1 in range(4, len(time) + 1, 4):
     it = it1 - 1
     f = plt.figure()
 
     ax1 = f.add_subplot(141)
-    # set up orthographic map projection
-    x, y, basemap = create_map_func(lons, lats)
-    # contour data over the basemap
-    cs1 = basemap.pcolor(
-        x, y, h[it, :, :], cmap="jet", shading="auto", vmin=60000, vmax=64000
-    )
-    cbar = basemap.colorbar(location="bottom")
-    cbar.ax.set_xticks(cbar.ax.get_xticks())
-    cbar.ax.set_xticklabels(cbar.ax.get_xticklabels(), rotation="horizontal", fontsize=8)
-    # Format colorbar tick labels using scientific notation
-    formatter = ticker.ScalarFormatter(useMathText=True)
-    formatter.set_powerlimits((-3, 3))  # Adjust the limits as needed
-    cbar.ax.xaxis.set_major_formatter(formatter)
-    power_text = cbar.ax.xaxis.get_offset_text()
-    power_text.set_size(8)
-    # Set label and title
-    cbar.set_label("h, m", fontsize=8)
-    ax1.set_title("Height", fontsize=8)
+    ax1 = make_maps(h[it, :, :], ax1, 60000, 64000, "h, m", "Height")
 
     ax2 = f.add_subplot(142)
-    # set up orthographic map projection
-    x, y, basemap = create_map_func(lons, lats)
-    # contour data over the basemap.
-    cs2 = basemap.pcolor(
-        x, y, vort[it, :, :], cmap="jet", shading="auto", vmin=-0.00005, vmax=0.00005
+    ax2 = make_maps(
+        vort[it, :, :], ax2, -0.00005, 0.00005, "$\\zeta$, s$^{-1}$", "Vorticity"
     )
-    cbar = basemap.colorbar(location="bottom")
-    cbar.ax.set_xticks(cbar.ax.get_xticks())
-    cbar.ax.set_xticklabels(cbar.ax.get_xticklabels(), rotation="horizontal", fontsize=8)
-    # Format colorbar tick labels using scientific notation
-    formatter = ticker.ScalarFormatter(useMathText=True)
-    formatter.set_powerlimits((-3, 3))  # Adjust the limits as needed
-    cbar.ax.xaxis.set_major_formatter(formatter)
-    power_text = cbar.ax.xaxis.get_offset_text()
-    power_text.set_size(8)
-    # Set label and title
-    cbar.set_label("$\\zeta$, s$^{-1}$", fontsize=8)
-    ax2.set_title("Vorticity", fontsize=8)
 
     ax3 = f.add_subplot(143)
-    # set up orthographic map projection
-    x, y, basemap = create_map_func(lons, lats)
-    # contour data over the basemap.
-    cs3 = basemap.pcolor(x, y, v[it, :, :], cmap="jet", shading="auto", vmin=-7, vmax=7)
-    cbar = basemap.colorbar(location="bottom")
-    cbar.ax.set_xticklabels(cbar.ax.get_xticklabels(), rotation="horizontal", fontsize=8)
-    cbar.set_label("v, m s$^{-1}$", fontsize=8)
-    ax3.set_title("v", fontsize=8)
+    ax3 = make_maps(v[it, :, :], ax3, -7, 7, "v, m s$^{-1}$", "v")
 
     ax4 = f.add_subplot(144)
-    # set up orthographic map projection
-    x, y, basemap = create_map_func(lons, lats)
-    # contour data over the basemap
-    cs4 = basemap.pcolor(
-        x, y, u[it, :, :], cmap="jet", shading="auto", vmin=-5, vmax=60
-    )
-    cbar = basemap.colorbar(location="bottom")
-    cbar.ax.set_xticklabels(cbar.ax.get_xticklabels(), rotation="horizontal", fontsize=8)
-    cbar.set_label("u, m s$^{-1}$", fontsize=8)
-    ax4.set_title("u", fontsize=8)
+    ax4 = make_maps(u[it, :, :], ax4, -5, 60, "u, m s$^{-1}$", "u")
 
     ITER += 1
     plt.suptitle(f"t={time[it]/86400:.2f} days", fontsize=8, y=0.25)
