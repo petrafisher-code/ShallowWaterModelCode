@@ -10,6 +10,7 @@ netCDF file.
 import os
 import getpass
 import warnings
+import subprocess
 
 import numpy as np
 
@@ -122,8 +123,36 @@ for it1 in range(4, len(time) + 1, 4):
     plt.suptitle(f"t={time[it]/86400:.2f} days", fontsize=8, y=0.25)
     plt.savefig(f"../../output/frames/frame{ITER:03d}.png", format="png", dpi=300)
 
-os.system(
-    "ffmpeg -r 5 -f image2  -i ../../output/frames/frame%03d.png -vframes 34 -vcodec libx264\
-          -crf 25 -pix_fmt yuv420p ../../output/animations/animation.mp4"
+# Call ffmpeg to create mp4 animation
+subprocess.run(
+    [
+        "ffmpeg",
+        "-r",
+        "5",
+        "-f",
+        "image2",
+        "-i",
+        "../../output/frames/frame%03d.png",
+        "-vframes",
+        "34",
+        "-vcodec",
+        "libx264",
+        "-crf",
+        "25",
+        "-pix_fmt",
+        "yuv420p",
+        "../../output/animations/animation.mp4",
+    ],
+    check=True,
 )
-os.system("ffmpeg -i ../../output/animations/animation.mp4  ../../output/animations/animation.gif")
+
+# Call ffmpeg to convert mp4 to gif
+subprocess.run(
+    [
+        "ffmpeg",
+        "-i",
+        "../../output/animations/animation.mp4",
+        "../../output/animations/animation.gif",
+    ],
+    check=True,
+)
