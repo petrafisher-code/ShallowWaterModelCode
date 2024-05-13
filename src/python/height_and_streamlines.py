@@ -80,6 +80,10 @@ cbar.set_label(scaled_label)
 formatter = FuncFormatter(lambda x, _: f'{x/scale:.2f}')
 cbar.ax.yaxis.set_major_formatter(formatter)
 
+# Changing the notation of the x and y axis
+plt.ticklabel_format(style='sci', scilimits=(0,0))
+plt.gca().ticklabel_format(useMathText=True)
+
 plt.title(f"Height and Velocity Streamlines at t={time[-1]/(86400):.2f} days")
 
 if not os.path.exists('../../output/frames'):
