@@ -78,8 +78,7 @@ def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, title_var):  # 
     formatter = ticker.ScalarFormatter(useMathText=True)
     formatter.set_powerlimits((-3, 3))
     cbar.ax.xaxis.set_major_formatter(formatter)
-    power_text = cbar.ax.xaxis.get_offset_text()
-    power_text.set_size(8)
+    cbar.ax.xaxis.get_offset_text().set_size(8)
 
     # Set label and title
     cbar.set_label(colourbar_label_var, fontsize=8)
@@ -94,18 +93,18 @@ for it1 in range(4, len(time) + 1, 4):
     f = plt.figure()
 
     ax1 = f.add_subplot(141)
-    ax1 = make_maps(h[it, :, :], ax1, 60000, 64000, "h, m", "Height")
+    ax1 = make_maps(h[it, :, :], ax1, 60000, 64000, "h (m)", "Height")
 
     ax2 = f.add_subplot(142)
     ax2 = make_maps(
-        vort[it, :, :], ax2, -0.00005, 0.00005, "$\\zeta$, s$^{-1}$", "Vorticity"
+        vort[it, :, :], ax2, -0.00005, 0.00005, "$\\zeta$ (s$^{-1}$)", "Vorticity"
     )
 
     ax3 = f.add_subplot(143)
-    ax3 = make_maps(v[it, :, :], ax3, -7, 7, "v, m s$^{-1}$", "v")
+    ax3 = make_maps(v[it, :, :], ax3, -7, 7, "v (m s$^{-1}$)", "v")
 
     ax4 = f.add_subplot(144)
-    ax4 = make_maps(u[it, :, :], ax4, -5, 60, "u, m s$^{-1}$", "u")
+    ax4 = make_maps(u[it, :, :], ax4, -5, 60, "u (m s$^{-1}$)", "u")
 
     ITER += 1
     plt.suptitle(f"t={time[it]/86400:.2f} days", fontsize=8, y=0.25)
