@@ -24,10 +24,10 @@ from create_map import create_map_func
 from netCDF4 import Dataset as NetCDFFile
 
 matplotlib.use("Agg")
-
 warnings.filterwarnings("ignore")
-
 username = getpass.getuser()
+
+CASSINI_PERSPECTIVE = True
 
 nc = NetCDFFile("../../tests/output.nc")
 lons = nc.variables["phi"][:]
@@ -69,7 +69,10 @@ def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, colourbar_units
             The modified axes containing the map plot.
     """
     # set up orthographic map projection
-    x, y, basemap = create_map_func(lons, lats)
+    if CASSINI_PERSPECTIVE:
+        x, y, basemap = create_map_func(lons, lats, 1400000, 82)
+    else:
+        x, y, basemap = create_map_func(lons, lats)
     # contour data over the basemap
     basemap.pcolor(x, y, data, cmap="jet", shading="auto", vmin=vmin_var, vmax=vmax_var)
     cbar = basemap.colorbar(location="bottom", pad=0.05)
