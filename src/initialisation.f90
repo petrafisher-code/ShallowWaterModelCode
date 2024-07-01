@@ -47,6 +47,8 @@
 	!>@param[inout] redq_s - for efficiency
 	!>@param[inout] redq - for efficiency
 	!>@param[inout] recq - for efficiency
+	!>@param[inout] rect - for efficiency
+	!>@param[inout] rect_s - for efficiency
 	!>@param[inout] cq_s - for efficiency
 	!>@param[inout] cq - for efficiency
 	!>@param[inout] dp1 - for efficiency
@@ -87,7 +89,7 @@
 				height, dt, dx, dy, x, y, &
 				phi, theta, phin, thetan, &
 				recqdp, recqdp_s, recqdq_s, redq_s,redq, &
-				recq, cq_s, cq, dp1, dq, &
+				recq, rect, rect_s, cq_s, cq, dp1, dq, &
 				recqdq, &
 				u_nudge, o_halo, ipstart, jpstart, coords, &
 				inputfile, add_random_height_noise, &
@@ -114,7 +116,7 @@
     									f_cor, h, hs, u, v, height, &
     											dx, dy, x, y, &
     				recqdp, recqdp_s, recqdq_s, redq_s, redq, &
-    				recq, cq_s, cq, dp1, dq, recqdq
+    				recq, rect, rect_s, cq_s, cq, dp1, dq, recqdq
     	real(wp), intent(inout), allocatable, dimension(:) :: &
     									phi, theta, phin, thetan,u_nudge, &
     									dphi, dtheta, dphin, dthetan
@@ -226,6 +228,10 @@
 		allocate( redq(1-o_halo:ipp+o_halo,1-o_halo:jpp+o_halo), STAT = AllocateStatus)
 		if (AllocateStatus /= 0) STOP "*** Not enough memory ***"
 		allocate( recq(1-o_halo:ipp+o_halo,1-o_halo:jpp+o_halo), STAT = AllocateStatus)
+		if (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+		allocate( rect(1-o_halo:ipp+o_halo,1-o_halo:jpp+o_halo), STAT = AllocateStatus)
+		if (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+		allocate( rect_s(1-o_halo:ipp+o_halo,1-o_halo:jpp+o_halo), STAT = AllocateStatus)
 		if (AllocateStatus /= 0) STOP "*** Not enough memory ***"
 		allocate( cq_s(1-o_halo:ipp+o_halo,1-o_halo:jpp+o_halo), STAT = AllocateStatus)
 		if (AllocateStatus /= 0) STOP "*** Not enough memory ***"
@@ -616,6 +622,9 @@
 			cq(:,j)=cos(theta(j))
 			dp1(:,j)=dphi(:)
 			dq(:,j)=dtheta(j)
+
+			rect(:,j)=tan(theta(j))/re
+			rect_s(:,j)=tan(thetan(j))/re
 		enddo
 		
 		

@@ -136,7 +136,7 @@
 				grid1%height, grid1%dt,grid1%dx, grid1%dy, grid1%x, grid1%y, &
 				grid1%phi, grid1%theta, grid1%phin, grid1%thetan, &
    				grid1%recqdp, grid1%recqdp_s, grid1%recqdq_s, grid1%redq_s, grid1%redq, &
-    				grid1%recq, grid1%cq_s, grid1%cq, grid1%dp1, grid1%dq, &
+    				grid1%recq, grid1%rect, grid1%rect_s, grid1%cq_s, grid1%cq, grid1%dp1, grid1%dq, &
     				grid1%recqdq, &
  				grid1%u_nudge,grid1%o_halo, &
 				grid1%ipstart, grid1%jpstart, grid1%coords, &
@@ -174,7 +174,7 @@
 				grid1%height, grid1%dt, grid1%dx, grid1%dy, grid1%x, grid1%y, &
 				grid1%phi, grid1%theta, grid1%phin, grid1%thetan, &
    				grid1%recqdp, grid1%recqdp_s, grid1%recqdq_s, grid1%redq_s, grid1%redq, &
-    			grid1%recq, grid1%cq_s, grid1%cq, grid1%dp1, grid1%dq, &
+    			grid1%recq, grid1%rect, grid1%rect_s, grid1%cq_s, grid1%cq, grid1%dp1, grid1%dq, &
     			grid1%recqdq, &
 				grid1%u_nudge,grid1%o_halo, &
 				grid1%ipstart, grid1%jpstart, grid1%coords, &
