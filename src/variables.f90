@@ -41,7 +41,7 @@
             logical :: add_random_height_noise, &
             			initially_geostrophic, &
             			viscous_dissipation, &
-            			dissipate_h, nudge, restart
+            			dissipate_h, nudge, restart, new_eqs
             integer(i4b) :: initial_winds, ip, jp, subgrid_model
             real(wp) :: wind_factor, wind_shift, wind_reduce, vis, &
             			runtime, dt, output_interval, &
