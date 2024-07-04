@@ -140,23 +140,23 @@
 		! Now use the mid-point values to predict the values at the next timestep
 		! continuity:
 		h_new = h(1:ip,1:jp) &
-		- (dt/(recqdp(0:ip-1,1:jp)))*(u_mid_xt(1:ip,1:jp)-u_mid_xt(0:ip-1,1:jp)) &
-		- (dt/(recqdq(1:ip,0:jp-1))) * &
-		(v_mid_yt(1:ip,1:jp)*cq_s(1:ip,1:jp)-v_mid_yt(1:ip,0:jp-1)*cq_s(1:ip,0:jp-1))
+			- (dt/(recqdp(0:ip-1,1:jp)))*h(1:ip,1:jp)*(u_mid_xt(1:ip,1:jp)-u_mid_xt(0:ip-1,1:jp)) &
+			- (dt/(recqdq(1:ip,0:jp-1))) * &
+			h(1:ip,1:jp)*(v_mid_yt(1:ip,1:jp)*cq_s(1:ip,1:jp)-v_mid_yt(1:ip,0:jp-1)*cq_s(1:ip,0:jp-1))
 
 		! u-momentum equation:
 		Ux_mid_xt = u_mid_xt*u_mid_xt
 		Uy_mid_yt = u_mid_yt*v_mid_yt
 		u_new = u(1:ip,1:jp) &
-		- (dt/(recqdp(0:ip-1,1:jp)))*  (Ux_mid_xt(1:ip,1:jp)-Ux_mid_xt(0:ip-1,1:jp)) &
-		- (dt/(redq(1:ip,0:jp-1)))*(Uy_mid_yt(1:ip,1:jp)-Uy_mid_yt(1:ip,0:jp-1))
+			- (dt/(recqdp(0:ip-1,1:jp)))*(Ux_mid_xt(1:ip,1:jp)-Ux_mid_xt(0:ip-1,1:jp)) &
+			- (dt/(redq(1:ip,0:jp-1)))*(Uy_mid_yt(1:ip,1:jp)-Uy_mid_yt(1:ip,0:jp-1))
 
 		! v-momentum equation:
 		Vx_mid_xt = u_mid_xt*v_mid_xt
 		Vy_mid_yt = v_mid_yt*v_mid_yt
 		v_new = v(1:ip,1:jp) &
-		- (dt/(recqdp(0:ip-1,1:jp)))*(Vx_mid_xt(1:ip,1:jp)-Vx_mid_xt(0:ip-1,1:jp)) &
-		- (dt/(redq(1:ip,0:jp-1)))*(Vy_mid_yt(1:ip,1:jp)-Vy_mid_yt(1:ip,0:jp-1))
+			- (dt/(recqdp(0:ip-1,1:jp)))*(Vx_mid_xt(1:ip,1:jp)-Vx_mid_xt(0:ip-1,1:jp)) &
+			- (dt/(redq(1:ip,0:jp-1)))*(Vy_mid_yt(1:ip,1:jp)-Vy_mid_yt(1:ip,0:jp-1))
 
 		! add on Coriolis and contribution of orography to pressure gradient:
 		uv = u*v
