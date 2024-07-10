@@ -21,7 +21,7 @@
             real(wp), dimension(:,:), allocatable :: f_cor, h, hs, u,v, height, &
             										 dx, dy, x, y, &
     				recqdp, recqdp_s, recqdq_s, redq_s, redq, &
-    				recq, cq_s, cq, dp1, dq, recqdq
+    				recq, rect, rect_s, cq_s, cq, dp1, dq, recqdq
             										 
             real(wp), dimension(:), allocatable :: phi, theta, phin, thetan, u_nudge, &
             	dphi, dtheta, dphin, dthetan
@@ -41,7 +41,7 @@
             logical :: add_random_height_noise, &
             			initially_geostrophic, &
             			viscous_dissipation, &
-            			dissipate_h, nudge, restart
+            			dissipate_h, nudge, restart, new_eqs
             integer(i4b) :: initial_winds, ip, jp, subgrid_model
             real(wp) :: wind_factor, wind_shift, wind_reduce, vis, &
             			runtime, dt, output_interval, &

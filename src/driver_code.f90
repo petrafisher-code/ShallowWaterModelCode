@@ -38,6 +38,8 @@
 	!>@param[in] redq_s - for efficiency
 	!>@param[in] redq - for efficiency
 	!>@param[in] recq - for efficiency
+	!>@param[in] rect - for efficiency
+	!>@param[in] rect_s - for efficiency
 	!>@param[in] cq_s - for efficiency
 	!>@param[in] cq - for efficiency
 	!>@param[in] dp1 - for efficiency
@@ -57,26 +59,27 @@
 	!>@param[in] vis_eq: viscosity in equatorial region (needed for stability)
 	!>@param[in] lat_eq: latitude north and south over which to apply vis_eq
 	!>@param[in] dims,id, world_process, ring_comm: mpi variables
+	!>@param[in] new_eqs: whether or not to use the new equations
     subroutine model_driver(ip,ipp, jp,jpp, ntim, f, &
 				re, g, rho, dphi, dtheta, dphin, dthetan, &
 				f_cor,h,hs, u, v, &
 				height, dt, dx, dy, x, y, &
 				phi, theta, phin, thetan, &
 				recqdp, recqdp_s, recqdq_s, redq_s, redq, &
-    			recq, cq_s, cq, dp1, dq,recqdq, &
+    			recq, rect, rect_s, cq_s, cq, dp1, dq,recqdq, &
 			    u_nudge,o_halo, &
 				ipstart, jpstart, coords, &
 				new_file,outputfile, output_interval, nudge, nudge_tau, &
 				subgrid_model, viscous_dissipation, dissipate_h,vis, cvis, &
 				vis_eq, lat_eq, &
-				dims,id, world_process, rank, ring_comm)
+				dims,id, world_process, rank, ring_comm, new_eqs)
 		use numerics_type
 		use mpi_module
 		use advection
 
 		implicit none
 		logical, intent(inout) :: new_file
-		logical, intent(in) :: nudge, viscous_dissipation, dissipate_h
+		logical, intent(in) :: nudge, viscous_dissipation, dissipate_h, new_eqs
 		integer(i4b), intent(in) :: ip,ipp, jp,jpp, ntim, o_halo, ipstart, jpstart, &
 									subgrid_model
 		integer(i4b), intent(in) :: id, world_process, ring_comm, rank
@@ -89,7 +92,7 @@
 		real(wp), dimension(1-o_halo:ipp+o_halo,1-o_halo:jpp+o_halo), &
 					intent(in) :: f_cor, hs, &
     				recqdp, recqdp_s, recqdq_s, redq_s, redq, &
-    				recq, cq_s, cq, dp1, dq, recqdq
+    				recq, rect, rect_s, cq_s, cq, dp1, dq, recqdq
 		real(wp), dimension(1-o_halo:ipp+o_halo,1-o_halo:jpp+o_halo), &
 					intent(inout) :: h, u, v, height
 		real(wp), dimension(1-o_halo:ipp+o_halo,1-o_halo:jpp+o_halo), &
@@ -149,10 +152,15 @@
 			h_old=h
 			u_old=u
 			v_old=v
-			call lax_wendroff_ll(ipp,jpp,o_halo,dt,g,u,v,h,hs,re,&
-	    		theta,thetan,dtheta,dthetan, phi, phin, dphi, dphin, f_cor, &
-    			recqdq, recqdp, recqdp_s, recqdq_s, redq_s, redq, cq, cq_s)	    		
-! 			call lax_wendroff_sphere(ipp,jpp,o_halo,dt,dx,dy,g,u,v,h,hs,re,theta,f_cor)
+			if (new_eqs) then
+				call lax_wendroff_conservative(ipp,jpp,o_halo,dt,g,u,v,h,hs,re,&
+					theta,thetan,dtheta,dthetan, phi, phin, dphi, dphin, f_cor, &
+					recqdq, recqdp, recqdp_s, recqdq_s, redq_s, redq, rect, rect_s, cq, cq_s)
+			else
+				call lax_wendroff_ll(ipp,jpp,o_halo,dt,g,u,v,h,hs,re,&
+					theta,thetan,dtheta,dthetan, phi, phin, dphi, dphin, f_cor, &
+					recqdq, recqdp, recqdp_s, recqdq_s, redq_s, redq, rect, rect_s, cq, cq_s)
+			endif	    		
 			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 

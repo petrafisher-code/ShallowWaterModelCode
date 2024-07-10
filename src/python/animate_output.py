@@ -27,7 +27,7 @@ matplotlib.use("Agg")
 warnings.filterwarnings("ignore")
 username = getpass.getuser()
 
-CASSINI_PERSPECTIVE = True
+CASSINI_PERSPECTIVE = False
 
 nc = NetCDFFile("../../tests/output.nc")
 lons = nc.variables["phi"][:]
