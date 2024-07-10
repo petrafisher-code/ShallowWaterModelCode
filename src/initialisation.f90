@@ -625,9 +625,7 @@
 
 			rect(:,j)=tan(theta(j))/re
 			rect_s(:,j)=tan(thetan(j))/re
-		enddo
-		
-		
+		enddo		
 
 		deallocate(wind)
 		deallocate(latitude)

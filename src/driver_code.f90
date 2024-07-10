@@ -153,7 +153,7 @@
 			u_old=u
 			v_old=v
 			if (new_eqs) then
-				call lax_wendroff_sphere(ipp,jpp,o_halo,dt,g,u,v,h,hs,re,&
+				call lax_wendroff_conservative(ipp,jpp,o_halo,dt,g,u,v,h,hs,re,&
 					theta,thetan,dtheta,dthetan, phi, phin, dphi, dphin, f_cor, &
 					recqdq, recqdp, recqdp_s, recqdq_s, redq_s, redq, rect, rect_s, cq, cq_s)
 			else
