@@ -111,26 +111,18 @@
 		output_time=output_interval
 		rank2=dims(1)*dims(2)
 
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		! time-loop                                                                      !
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		! time-loop
 		do n=1,ntim	
-		
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			! write netcdf variables                                                     !
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			! write netcdf variables
 			time=real(n-1,wp)*dt
 			if (time-time_last_output >= output_interval) then
 				if (id==world_process) &
 					print *,'output no ',cur,' at time (hrs) ', &
 						time/3600._wp,n,' steps of ',ntim
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				! calculate diagnostics for output: vorticity, etc                       !
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				! calculate diagnostics for output: vorticity, etc
 				call diagnostics(ipp,jpp,o_halo,dt,u,v, vort,re,&
 						theta,thetan,dtheta,dthetan, phi, phin, dphi, dphin, &
 						recq, cq_s, cq, dp1, dq)
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				
 				call output(new_file,outputfile,cur,ip,ipp,ipstart,jp,jpp,jpstart, &
 							o_halo, &
@@ -140,15 +132,8 @@
 				time_last_output=time
 				cur=cur+1
 			endif
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			
-			
-			
-			
 
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			! advance solution 1 time-step                                               !
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			! advance solution 1 time-step
 			h_old=h
 			u_old=u
 			v_old=v
@@ -160,65 +145,27 @@
 				call lax_wendroff_ll(ipp,jpp,o_halo,dt,g,u,v,h,hs,re,&
 					theta,thetan,dtheta,dthetan, phi, phin, dphi, dphin, f_cor, &
 					recqdq, recqdp, recqdp_s, recqdq_s, redq_s, redq, rect, rect_s, cq, cq_s)
-			endif	    		
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			endif
 
 
-
-
-
-
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			! nudge                                                                      !
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			! nudge
 			if (nudge) then
 				do j=1,jpp
 					! mid-point rule:
 					u(1:ipp,j)=u(1:ipp,j)+ &
 						(u_nudge(j)- &
 						(0.5_wp*(u(1:ipp,j)+u_old(1:ipp,j)))/real(1,wp) ) &
-						/nudge_tau * dt
-! 					v(1:ipp,j)=v(1:ipp,j)+&
-! 						(0._wp- &
-! 						sum(0.5_wp*(v(1:ipp,j)+v_old(1:ipp,j)))/real(ipp,wp) ) &
-! 						/nudge_tau *dt
-
-! 					Derived by integrating du/dt=(u_nudge-u)/tau
-! 					u(1:ipp,j)=u_nudge(j)- &
-! 						(u_nudge(j)- &
-! 						(u(1:ipp,j))/real(1,wp) ) * &
-! 						exp(-dt/nudge_tau )
-! 					v(1:ipp,j)=0._wp- &
-! 						(0._wp- &
-! 						(v(1:ipp,j))/real(1,wp) ) * &
-! 						exp(-dt/nudge_tau )
-					
+						/nudge_tau * dt					
 				enddo
 			endif
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-
-
-
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			! calculate dissipation: mid-point rule                                      !
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			! calculate dissipation: mid-point rule
 			if (viscous_dissipation) then
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				! halo exchanges                                                         !
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				! halo exchanges
 				call exchange_halos(ring_comm, id, ipp, jpp, o_halo, u)
 				call exchange_halos(ring_comm, id, ipp, jpp, o_halo, v)
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 				
-				
-				
-				
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				! dissipate u                                                            !
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				! dissipate u
 				call dissipation(ipp,jpp,o_halo,dt,0.5_wp*(u_old+u), delsq,re,&
 					theta,thetan,dtheta,dthetan, phi, phin, dphi, dphin, &
 					recq, cq_s, dp1, dq)
@@ -233,17 +180,8 @@
 				case default
 					print *,'error subgrid ',subgrid_model
 				end select
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-
-
-				
-
-
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				! dissipate v                                                            !
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				! dissipate v
 				call dissipation(ipp,jpp,o_halo,dt,0.5_wp*(v_old+v), delsq,re,&
 					theta,thetan,dtheta,dthetan, phi, phin, dphi, dphin, &
 					recq, cq_s, dp1, dq)
@@ -256,7 +194,6 @@
 				case default
 					print *,'error subgrid ',subgrid_model
 				end select
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 				do j=1,jpp
@@ -269,17 +206,10 @@
 				enddo
 
 				
-					
-							
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				! dissipate h                                                            !
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				! dissipate h
 				if (dissipate_h .and. (subgrid_model == 1)) then
-					!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-					! halo exchanges                                                     !
-					!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					! halo exchanges
 					call exchange_halos(ring_comm, id, ipp, jpp, o_halo, h)
-					!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 					call dissipation(ipp,jpp,o_halo,dt,0.5_wp*(h_old+h), delsq,re,&
 						theta,thetan,dtheta,dthetan, phi, phin, dphi, dphin, &
@@ -288,54 +218,15 @@
 						
 					h(1:ipp,1:jpp)=h(1:ipp,1:jpp)+dt*delsq*vis
 				endif
-				!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			endif
 
-
-
-			endif	    		
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			! halo exchanges                                                             !
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			! halo exchanges
 			call exchange_halos(ring_comm, id, ipp, jpp, o_halo, h)
 			call exchange_halos(ring_comm, id, ipp, jpp, o_halo, u)
 			call exchange_halos(ring_comm, id, ipp, jpp, o_halo, v)
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			
-! 			if(coords(2)==(dims(2)-1)) then
-! 				v(:,jpp+1:jpp+o_halo)=0._wp
-! 				do j=jpp+1,jpp+o_halo
-! 					u(:,j)=u_nudge(j)
-! 				enddo
-! 				h(:,jpp+o_halo)=h(:,jpp)
-! 			endif
-! 			if(coords(2)==0) then
-! 				v(:,1-o_halo)=0._wp
-! 				do j=1-o_halo,0
-! 					u(:,j)=u_nudge(j)
-! 				enddo
-! 				h(:,1-o_halo)=h(:,1)
-! 			endif
-			
 
 		enddo
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-
-
-
-
-		
 	end subroutine model_driver
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	
 	
 	
@@ -385,9 +276,7 @@
 		real(wp), intent(inout), dimension(1:ip,1:jp) :: vort
 		! local variables:
 		integer(i4b) :: j, i
-			
 		
-				
 		! calculate relative vorticity 
 		! (central difference ):
 		vort(1:ip,1:jp)  =-1._wp/(recq(1:ip,1:jp))* &
@@ -397,10 +286,6 @@
 			  
 
 	end subroutine diagnostics
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-	
-	
 
 
 	!>@author
@@ -458,20 +343,14 @@
 		logical :: var
 
 
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		! perform a blocking recv to wait for message from main process, 				 !
-		! before carrying on															 !
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		! perform a blocking recv to wait for message from main process,
+		! before carrying on
 		if(id .ne. world_process) then
 			tag1=id
 			call MPI_Recv(var,1, MPI_LOGICAL, world_process, &
 				tag1, MPI_COMM_WORLD, MPI_STATUS_IGNORE,error)
 		endif
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-
-	
 		if((id==world_process) .and. new_file) then
 			! open the file
 		
@@ -596,13 +475,7 @@
 			new_file=.false.
 		endif
 	
-! 	
-
-
-
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		! now send messages from the main process to all other processes                 !
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		! Now send messages from the main process to all other processes
 		if(id == world_process) then
 			do i=1,rank-1
 				tag1=i
@@ -610,17 +483,9 @@
 						tag1, MPI_COMM_WORLD, error)
 			enddo
 		endif
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-
-	
-	
-
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		! perform a blocking recv to wait for message from main process,                 !
-		! before carrying on                               								 !
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		! Perform a blocking recv to wait for message from main process,
+		! before carrying on
 		if(id .ne. world_process) then
 			tag1=id
 			call MPI_Recv(id_go,1, MPI_INTEGER9, id-1, &
@@ -628,17 +493,10 @@
 		else
 			id_go=world_process ! lets us go for first run
 		endif
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-		
-		
-		
 		
 
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		! ****WRITE****																	 !			
-		! now we can write to file - each PE writes its own segment						 !
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		! ****WRITE****		
+		! now we can write to file - each PE writes its own segment
 		call check( nf90_open(outputfile, NF90_WRITE, ncid) )
 		
 		if(n == 1) then
@@ -691,22 +549,14 @@
 		call check( nf90_put_var(ncid, varid, vort(1:ipp,1:jpp), &
 					start = (/1+ipstart,1+jpstart,n/)))	
 		call check( nf90_close(ncid) )
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
-
-
-
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		! perform a send, to essentially allow next PE to resume and start the write     !
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		! Perform a send, to essentially allow next PE to resume and start the write
 		if((id == id_go).and.((id+1).lt.rank)) then
 			tag1=id+1
 			call MPI_Send(id+1, 1, MPI_INTEGER9, id+1, &
 						tag1, MPI_COMM_WORLD, error)
 		endif
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 		if (rank > 1 ) then
@@ -724,14 +574,11 @@
 					tag1, MPI_COMM_WORLD, MPI_STATUS_IGNORE,error)
 			endif
 		endif	
-	
-
 
 	end subroutine output
 	
-	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	! HELPER ROUTINE                                                       !
-	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+	! HELPER ROUTINE
 	subroutine check(status)
 		use netcdf
 		use numerics_type
@@ -742,6 +589,5 @@
 			stop "Stopped"
 		end if
 	end subroutine check
-	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	
 	end module drivers

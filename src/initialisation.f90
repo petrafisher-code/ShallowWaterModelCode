@@ -8,9 +8,7 @@
     private
     public :: allocate_and_set
     contains
-	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	! Allocate and set arrays                                                            !
-	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	! ALLOCATE AND SET ARRAYS
 	!>@author
 	!>Paul J. Connolly, The University of Manchester
 	!>@brief
@@ -146,8 +144,6 @@
 		integer(i4b) :: k, nbottom, ntop, tag1
 		integer(i4b), allocatable, dimension(:) :: seed
 		
-		
-		
 
 		if(id>=dims(1)*dims(2)) return
 
@@ -165,13 +161,9 @@
 		! 3. arrays:
 
 
-
-
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		! find the number of grid points on each PE                                      !
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		! FIND THE NUMBER OF GRID POINTS ON EACH PE
 		call MPI_CART_COORDS(comm2d, id, 2, coords, error)
-! 		print *,'Coords of ',id,' are ',coords
+		! print *,'Coords of ',id,' are ',coords
 
 		! number of grid points in all but last:
 		ipp = floor(real(ip,wp)/real(dims(1),wp)) 
@@ -185,17 +177,10 @@
 		if(coords(2) == (dims(2)-1)) then
 			jpp=jp-(dims(2)-1)*jpp ! number of grid points in last
 		endif
-! 		print *,ip,jp,ipp,jpp,ipstart, jpstart,coords
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		! print *,ip,jp,ipp,jpp,ipstart, jpstart,coords
 
 
-
-
-
-
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		! allocate arrays                                                                !
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		! ALLOCATE ARRAYS
 		allocate( f_cor(1-o_halo:ipp+o_halo,1-o_halo:jpp+o_halo), STAT = AllocateStatus)
 		if (AllocateStatus /= 0) STOP "*** Not enough memory ***"
 		allocate( h(1-o_halo:ipp+o_halo,1-o_halo:jpp+o_halo), STAT = AllocateStatus)
@@ -262,31 +247,23 @@
 		if (AllocateStatus /= 0) STOP "*** Not enough memory ***"
 		allocate( u_nudge(1-o_halo:jpp+o_halo), STAT = AllocateStatus)
 		if (AllocateStatus /= 0) STOP "*** Not enough memory ***"
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
-
-
-
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		! read netcdf file                                                               !
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		! READ NETCDF FILE
 		! Open the file. NF90_NOWRITE tells netCDF we want read-only access to
 		! the file.
 		call check( nf90_open(inputfile, NF90_NOWRITE, ncid) )
 
 		call check( nf90_inq_dimid(ncid, "nlats", dimid) )
 		call check( nf90_inquire_dimension(ncid, dimid, len = nlats) )
-		
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		! allocate arrays                                                                !
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+		! ALLOCATE ARRAYS
 		allocate( latitude(1:nlats), STAT = AllocateStatus)
 		if (AllocateStatus /= 0) STOP "*** Not enough memory ***"
 		allocate( wind(1:nlats), STAT = AllocateStatus)
 		if (AllocateStatus /= 0) STOP "*** Not enough memory ***"
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!		
+
 
 		! Get the varid of the latitude variable, based on its name.
 		call check( nf90_inq_varid(ncid, "latitude", varid1) )
@@ -298,12 +275,7 @@
 		
 		! Close the file, freeing all resources.
 		call check( nf90_close(ncid) )
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
-		
-		
-		
-
 
 
 		! interpolate to grid, do finite diffs, pass halos, etc
@@ -320,21 +292,9 @@
 		! latitude array:	
 		dtheta=(nlat-slat) &
 				/ real(jp-1,wp) * PI/180._wp  ! lat
-				
-		! deal with singularity at the poles:
-! 		if((coords(2) == (dims(2)-1))  .and. (nlat .gt. 0._wp)) then
-! 			dtheta(jpp) = 2._wp*(90._wp-nlat)*PI/180._wp
-! 		endif
-! 		if((coords(2) == 0)  .and. (slat .lt. 0._wp)) then
-! 			dtheta(0) = 2._wp*(90._wp+slat)*PI/180._wp
-! 		endif
-				
-
 
 		
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		! set up latitude array need mpi to add them up:                                 !
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		! SET UP LATITUDE ARRAY NEED MPI TO ADD THEM UP:
 		call MPI_CART_SHIFT( comm2d, 1, 1, nbottom, ntop, error)
 		if(nbottom .ne. -1) then
 			tag1=001
@@ -354,11 +314,8 @@
 			tag1=001
 			call MPI_Send(theta(jpp), 1, MPI_REAL8, ntop, &
 				tag1, MPI_COMM_WORLD,error)
-		endif		
-! 		theta=dtheta(10)*(/(i,i=jpstart+1-o_halo-1,jpstart+jpp+o_halo-1)/) + slat*PI/180._wp
+		endif
 		
-		
-
 		
 		thetan=theta+dtheta/2._wp
 		do i=1-o_halo,jpp
@@ -366,7 +323,6 @@
 		enddo
 		
 		! if this is the top then set dtheta:
-
 		if(ntop == -1 ) then
 			dthetan(jpp+1)=2._wp*(90._wp*PI/180._wp -dthetan(jpp))
 		endif 
@@ -378,15 +334,11 @@
 			call MPI_Send(dthetan(1), 1, MPI_REAL8, nbottom, &
 					tag1, MPI_COMM_WORLD,error)
 		endif 	
-! 		dthetan=(nlat-slat) / real(jp-1,wp) * PI/180._wp  ! lat
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		! dthetan=(nlat-slat) / real(jp-1,wp) * PI/180._wp  ! lat
 
 
-		select case (initial_winds)
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			! saturn winds:                                                              !
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			case (1) 
+		select case (initial_winds)    
+			case (1)  ! saturn winds
 			! interpolate winds to u_nudge
 			delta_omega=2._wp*PI/(3600._wp)*(1._wp/10.656_wp-1._wp/rotation_period_hours)
 			do i=1-o_halo,jpp+o_halo
@@ -406,17 +358,12 @@
 			
 				u_nudge(i)=var
 			enddo
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			! ideal jet:                                                                 !
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			case (2) 
+			case (2) ! ideal jet:
 			do i=1-o_halo,jpp+o_halo
 				u_nudge(i)=u_jet* exp(-0.5_wp*(theta(i)-theta_jet*pi/180._wp)**2._wp &
 				 				/ (h_jet*pi/180._wp)**2._wp )
 			enddo
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 			case default
 				print *,'error initial_winds',initial_winds
@@ -427,8 +374,6 @@
 		do i=1-o_halo,ipp+o_halo
 			f_cor(i,:)=2._wp*f*sin(theta)			
 		enddo
-! 		if(coords(2)==0) f_cor(:,1-o_halo)=-f_cor(:,1-o_halo)
-! 		if(coords(2)==dims(2)-1) f_cor(:,jpp+o_halo)=-f_cor(:,jpp+o_halo)
 			
 		! calculate x, y, dx, dy:
 		do i=1-o_halo,ipp+o_halo
@@ -457,10 +402,7 @@
 
 
 
-
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		! calculate the height field from winds	- MPI needed to span sub-domains		 !
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!		
+		! CALCULATE THE HEIGHT FIELD FROM WINDS _ MPI NEEDED TO SPAN SUB-DOMAINS		
 		call MPI_CART_COORDS(comm2d, id, 2, coords, error)
 		call MPI_CART_SHIFT( comm2d, 1, 1, nbottom, ntop, error)	
 		
@@ -497,27 +439,16 @@
 				tag1, MPI_COMM_WORLD,error)
 		
 		endif
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
 		
 		
-		
-		
-		
-		
-		
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		! calculate and add noise														 !
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!		
+		! CALCULATE AND ADD NOISE	
 		call random_seed(size=k)
 		allocate(seed(1:k))
 		seed(:)=2
 		call random_seed(put=seed)
 		select case (initial_winds)
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			! saturn winds:                                                              !
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			case (1) 
+			case (1) ! saturn winds
 			do j=1,jp
 				do i=1,ip
 					r=random_normal() ! from the Netlib
@@ -537,12 +468,8 @@
 
 				enddo
 			enddo
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			! ideal jet:                                                                 !
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			case (2) 
+			case (2) ! ideal jet
 			do j=1,jp
 				do i=1,ip
 					r=random_normal() ! from the Netlib
@@ -562,7 +489,6 @@
 
 				enddo
 			enddo
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 			case default
 				print *,'error initial_winds',initial_winds
@@ -570,9 +496,7 @@
 		end select
 		
 			
-		deallocate(seed)
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!		
-
+		deallocate(seed)		
 
 
 		! set halos in Coriolis array
@@ -580,11 +504,9 @@
 		! set halos in height array
 		call exchange_halos(comm2d, id, ipp, jpp, o_halo, height)
 
-
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!		
-		! calculate u and v from height field (with noise) - no message passing needed
-		! if halos in height are set correctly
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!		
+	
+		! CALCULATE U AND V FROM HEIGHT FIELD (WITH NOISE) - NO MESSAGE PASSING NEEDED
+		! IF HALOS IN HEIGHT ARE SET CORRECTLY	
 		if(initially_geostrophic) then
 			do j=1,jpp
 				u(:,j)=-g*(height(:,j+1)-height(:,j-1)) / &
@@ -595,7 +517,6 @@
 						(re*(dphi(i)+dphi(i-1))*cos(theta(:))*f_cor(i,:))
 			enddo		
 		endif	
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!		
 
 
 		! set halos in u array
@@ -633,9 +554,7 @@
 	end subroutine allocate_and_set
 	
 
-	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	! HELPER ROUTINE                                                       !
-	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	! HELPER ROUTINE
 	subroutine check(status)
 	use netcdf
 	use numerics_type
@@ -646,7 +565,7 @@
 		stop "Stopped"
 	end if
 	end subroutine check
-	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
 
 	end module initialisation
 	

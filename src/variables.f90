@@ -25,12 +25,7 @@
             										 
             real(wp), dimension(:), allocatable :: phi, theta, phin, thetan, u_nudge, &
             	dphi, dtheta, dphin, dthetan
-        end type grid
-
-
-
-    											
-				
+        end type grid	
 	
 
 		!>@brief
@@ -51,7 +46,6 @@
         end type namelist_input
 
 
-
 		!>@brief
 		!>variables for mpi
         type mpi_vars
@@ -64,8 +58,6 @@
         	integer(i4b) :: ring_comm
         end type mpi_vars
 
-
-
         
 		!>@brief
 		!>variables for NetCDF file output
@@ -77,8 +69,6 @@
             integer(i4b) :: icur=1
             logical :: new_file=.true.
         end type io
-
-
 
 
 		! declare a namelist type
