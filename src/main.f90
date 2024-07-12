@@ -40,7 +40,6 @@
 	!> <br><br>
 
 
-
 	!>@author
 	!>Paul J. Connolly, The University of Manchester
 	!>@brief
@@ -56,55 +55,33 @@
         
         implicit none
         character (len=200) :: nmlfile = ' '
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ! namelist for run variables                                           !
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! namelist for run variables
         namelist /run_vars/ nm1
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ! MPI initialisation                                                   !
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! MPI INITIALISATION
 		call MPI_Init ( mp1%error )
 		call MPI_Comm_rank ( MPI_COMM_WORLD, mp1%id, mp1%error )
 		call MPI_Comm_size ( MPI_COMM_WORLD, mp1%rank, mp1%error )
 		mp1%wtime = MPI_Wtime ( )	
 		print *,'MPI running with ID: ',mp1%id,' and rank ',mp1%rank
 		call mpi_define(MPI_INTEGER9)
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
-
-
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ! read in namelists													   !
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! READ IN NAMELISTS
         call getarg(1,nmlfile)
         open(8,file=nmlfile,status='old', recl=80, delim='apostrophe')
         read(8,nml=run_vars)
         close(8)
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 		grid1%o_halo=1
 
 
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ! Block until processors have synced	     						   !
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! BLOCK UNTIL PROCESSORS HAVE SYNCED
 		call block_ring(MPI_COMM_WORLD,mp1%id,world_process,mp1%rank)
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
-
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ! Set-up the Cartesian topology										   !
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! SET-UP THE CARTESIAN TOPOLOGY
 		! note the min is so that there is not more than 1 proc per grid point
 		mp1%dx=min( floor( sqrt(real(mp1%rank,wp)) ), nm1%ip)
 		mp1%dy=min( floor( real(mp1%rank,wp) / real(mp1%dx,wp) ), nm1%jp )
@@ -119,16 +96,9 @@
 		! cart topo:
 		call MPI_CART_CREATE( MPI_COMM_WORLD, mp1%ndim, mp1%dims, &
 							mp1%periods, mp1%reorder,mp1%ring_comm, mp1%error )
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
-
-
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ! Allocate and initialise arrays									   !
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! ALLOCATE AND INITIALISE ARRAYS
 		call allocate_and_set(grid1%ip,grid1%jp,grid1%ntim, grid1%f, &
 				grid1%re, grid1%g, grid1%rho, grid1%dphi, grid1%dtheta, &
 				grid1%dphin, grid1%dthetan, &
@@ -149,24 +119,13 @@
 				nm1%rotation_period_hours, nm1%scale_height, nm1%slat, &
 				nm1%nlat, nm1%slat_thresh, nm1%nlat_thresh, &
 				mp1%dims, mp1%id, mp1%ring_comm)
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
-
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ! Block until processors have synced	     						   !
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! BLOCK UNTIL PROCESSORS HAVE SYNCED
 		call block_ring(MPI_COMM_WORLD,mp1%id,world_process,mp1%rank)
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ! Driver code: time-loop, advance solution, output	   				   !
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! DRIVER CODE: TIME-LOOP, ADVANCE SOLUTION, OUTPUT
  		call model_driver(nm1%ip,grid1%ip,nm1%jp,grid1%jp,grid1%ntim, grid1%f, &
 				grid1%re, grid1%g, grid1%rho, grid1%dphi, grid1%dtheta, &
 				grid1%dphin, grid1%dthetan, &
@@ -184,20 +143,10 @@
 				nm1%dissipate_h,nm1%vis,nm1%cvis, &
 				nm1%vis_eq,nm1%lat_eq, &
 				mp1%dims,mp1%id, world_process, mp1%rank, mp1%ring_comm, nm1%new_eqs)
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
-
-
-
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ! Terminate MPI											    		   !
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! TERMINATE MPI
 		call MPI_Finalize ( mp1%error )
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
     end program main
 
