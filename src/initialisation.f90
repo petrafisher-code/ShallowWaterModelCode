@@ -292,6 +292,14 @@
 		! latitude array:	
 		dtheta=(nlat-slat) &
 				/ real(jp-1,wp) * PI/180._wp  ! lat
+		
+		! deal with singularity at the poles:
+		! if((coords(2) == (dims(2)-1))  .and. (nlat .gt. 0._wp)) then
+		! 	dtheta(jpp) = 2._wp*(90._wp-nlat)*PI/180._wp
+		! endif
+		! if((coords(2) == 0)  .and. (slat .lt. 0._wp)) then
+		! 	dtheta(0) = 2._wp*(90._wp+slat)*PI/180._wp
+		! endif
 
 		
 		! SET UP LATITUDE ARRAY NEED MPI TO ADD THEM UP:
