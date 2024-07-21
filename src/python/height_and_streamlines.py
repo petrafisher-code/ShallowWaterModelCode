@@ -33,7 +33,7 @@ vort=nc.variables['vort'][:]
 h=nc.variables['h'][:]
 u=nc.variables['u'][:]
 v=nc.variables['v'][:]
-time=nc.variables['time'][:]
+time=nc.variables['time'][:]*2707788
 
 RE=5.4155760e7
 (lo,la)=np.meshgrid(lons,np.pi/2.-lats)
