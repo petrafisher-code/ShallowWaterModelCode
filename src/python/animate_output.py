@@ -28,6 +28,7 @@ warnings.filterwarnings("ignore")
 username = getpass.getuser()
 
 CASSINI_PERSPECTIVE = False
+TIME_SCALE = 2707788
 
 nc = NetCDFFile("../../tests/output.nc")
 lons = nc.variables["phi"][:]
@@ -36,7 +37,7 @@ vort = nc.variables["vort"][:]
 h = nc.variables["h"][:]
 v = nc.variables["v"][:]
 u = nc.variables["u"][:]
-time = nc.variables["time"][:]*2707788
+time = nc.variables["time"][:]*TIME_SCALE
 
 if not os.path.exists("../../output/frames"):
     os.mkdir("../../output/frames")
@@ -72,7 +73,7 @@ def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, title_var):  # 
     else:
         x, y, basemap = create_map_func(lons, lats)
     # contour data over the basemap
-    basemap.pcolor(x, y, data, cmap="jet", shading="auto") # vmin=vmin_var, vmax=vmax_var
+    basemap.pcolor(x, y, data, cmap="jet", shading="auto", vmin=vmin_var, vmax=vmax_var)
     cbar = basemap.colorbar(location="bottom", pad=0.05)
     cbar.ax.set_xticklabels(cbar.ax.get_xticklabels(), rotation="horizontal", fontsize=8)
 
@@ -106,17 +107,17 @@ for it1 in range(4, len(time) + 1, 4):
     it = it1 - 1
     f = plt.figure()
 
-    ax1 = make_maps(h[it, :, :], f.add_subplot(141), 60000, 64000, "h", "Height")
+    ax1 = make_maps(h[it, :, :], f.add_subplot(141), 1, 1.3, "h", "Height")
     ax2 = make_maps(
         vort[it, :, :],
         f.add_subplot(142),
-        -0.00005,
-        0.00005,
+        -300,
+        300,
         "$\\zeta$",
         "Vorticity",
     )
-    ax3 = make_maps(v[it, :, :], f.add_subplot(143), -7, 7, "v", "v")
-    ax4 = make_maps(u[it, :, :], f.add_subplot(144), -5, 60, "u", "u")
+    ax3 = make_maps(v[it, :, :], f.add_subplot(143), -0.7, 0.7, "v", "v")
+    ax4 = make_maps(u[it, :, :], f.add_subplot(144), 0, 5, "u", "u")
 
     ITER += 1
     plt.suptitle(f"t={time[it]/86400:.2f} days", fontsize=8, y=0.25)
