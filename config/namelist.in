@@ -21,9 +21,11 @@
 	nm1%cvis=0., ! usually between 0.1 and 0.2
 	nm1%vis_eq=0., ! viscosity for v over equator region
 	nm1%lat_eq=20., ! latitude north and south over which to apply vis_eq
-	nm1%runtime= 3., ! total run time
-	nm1%dt=0.000018, ! time-step
-	nm1%output_interval=0.02,
+	! total run time: 2.88767 (90 days), 23.308767 (2yrs), 582.336 (50yrs), 1164.6566 (100yrs), 11646.42254 (1000yrs)
+	nm1%runtime= 2.88767,
+	nm1%dt=0.00001846525651, ! time-step ~50s in nondimensional units
+	! output interval: 0.0159539816 (12 hrs), 5.8232 (6 months), 11.6464 (1yr), 116.464065 (10yrs)
+	nm1%output_interval=0.0159539816,
 	nm1%grav=1566. ! gravity
 	nm1%rho=0.19,	! density
 	nm1%Re=1.0, 	! radius of Saturn

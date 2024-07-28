@@ -117,8 +117,9 @@
 			time=real(n-1,wp)*dt
 			if (time-time_last_output >= output_interval) then
 				if (id==world_process) &
-					print *,'output no ',cur,' at time (hrs) ', &
-						time/3600._wp,n,' steps of ',ntim
+					print '(A, I0, A, F10.3, A, I0, A, I0)', 'output no ', cur, ' at time (hrs) ', &
+						time*2707788._wp/3600._wp, ', ', n, ' steps of ', ntim
+						! where 2707788 is the time scale for nondimensionalising
 				! calculate diagnostics for output: vorticity, etc
 				call diagnostics(ipp,jpp,o_halo,dt,u,v, vort,re,&
 						theta,thetan,dtheta,dthetan, phi, phin, dphi, dphin, &

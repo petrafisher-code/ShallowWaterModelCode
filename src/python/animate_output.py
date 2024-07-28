@@ -103,7 +103,7 @@ def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, title_var):  # 
 
 
 ITER = 0
-for it1 in range(4, len(time) + 1, 4):
+for it1 in range(1, len(time) + 1, 4):
     it = it1 - 1
     f = plt.figure()
 
