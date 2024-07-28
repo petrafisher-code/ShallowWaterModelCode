@@ -28,6 +28,7 @@ warnings.filterwarnings("ignore")
 username = getpass.getuser()
 
 CASSINI_PERSPECTIVE = False
+TIME_SCALE = 2707788
 
 nc = NetCDFFile("../../tests/output.nc")
 lons = nc.variables["phi"][:]
@@ -36,7 +37,7 @@ vort = nc.variables["vort"][:]
 h = nc.variables["h"][:]
 v = nc.variables["v"][:]
 u = nc.variables["u"][:]
-time = nc.variables["time"][:]
+time = nc.variables["time"][:]*TIME_SCALE
 
 if not os.path.exists("../../output/frames"):
     os.mkdir("../../output/frames")
@@ -44,7 +45,7 @@ if not os.path.exists("../../output/animations"):
     os.mkdir("../../output/animations")
 
 
-def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, colourbar_units_var, title_var):  # pylint: disable=R0913
+def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, title_var):  # pylint: disable=R0913
     """
     Generate an individual map plot with specified colorbar settings and labels.
 
@@ -59,8 +60,6 @@ def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, colourbar_units
             The maximum value for the colorbar.
         colourbar_label_var : str
             The label for the colorbar.
-        colourbar_units_var : str
-            The units for the colorbar label.
         title_var : str
             The title of the plot.
 
@@ -90,12 +89,12 @@ def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, colourbar_units
 
     # Set label and title
     if scientific_power == 0:
-        scientific_label = f"{colourbar_label_var} ({colourbar_units_var})"
+        scientific_label = f"{colourbar_label_var}"
     elif scientific_power == 1:
-        scientific_label = f"{colourbar_label_var} ($\u00d7$10{colourbar_units_var})"
+        scientific_label = f"{colourbar_label_var}"
     else:
         scientific_label = (
-            f"{colourbar_label_var} ($\u00d7$10$^{{{scientific_power}}}${colourbar_units_var})"
+            f"{colourbar_label_var} ($\u00d7$10$^{{{scientific_power}}}$)"
         )
     cbar.set_label(scientific_label, fontsize=8)
     ax.set_title(title_var, fontsize=8)
@@ -104,22 +103,21 @@ def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, colourbar_units
 
 
 ITER = 0
-for it1 in range(4, len(time) + 1, 4):
+for it1 in range(1, len(time) + 1, 4):
     it = it1 - 1
     f = plt.figure()
 
-    ax1 = make_maps(h[it, :, :], f.add_subplot(141), 60000, 64000, "h", "m", "Height")
+    ax1 = make_maps(h[it, :, :], f.add_subplot(141), 1, 1.3, "h", "Height")
     ax2 = make_maps(
         vort[it, :, :],
         f.add_subplot(142),
-        -0.00005,
-        0.00005,
+        -300,
+        300,
         "$\\zeta$",
-        "s$^{-1}$",
         "Vorticity",
     )
-    ax3 = make_maps(v[it, :, :], f.add_subplot(143), -7, 7, "v", "m s$^{-1}$", "v")
-    ax4 = make_maps(u[it, :, :], f.add_subplot(144), -5, 60, "u", "m s$^{-1}$", "u")
+    ax3 = make_maps(v[it, :, :], f.add_subplot(143), -0.7, 0.7, "v", "v")
+    ax4 = make_maps(u[it, :, :], f.add_subplot(144), 0, 5, "u", "u")
 
     ITER += 1
     plt.suptitle(f"t={time[it]/86400:.2f} days", fontsize=8, y=0.25)

@@ -151,12 +151,12 @@
 		! 1. basic equalities:
 		re=re_nm
 		g=grav
-		rho=rho_nm
+		! rho=rho_nm
 		dt=dt_nm
 
 		! 2. scalar formulae:
 		ntim=ceiling(runtime/dt)
-		f=2._wp*PI / (rotation_period_hours*3600._wp)
+		f=2._wp*PI / (rotation_period_hours*3600._wp)*2707788_wp
 		
 		! 3. arrays:
 
@@ -293,7 +293,7 @@
 		dtheta=(nlat-slat) &
 				/ real(jp-1,wp) * PI/180._wp  ! lat
 		
-		! deal with singularity at the poles:
+		! ! deal with singularity at the poles:
 		! if((coords(2) == (dims(2)-1))  .and. (nlat .gt. 0._wp)) then
 		! 	dtheta(jpp) = 2._wp*(90._wp-nlat)*PI/180._wp
 		! endif
@@ -370,7 +370,9 @@
 			case (2) ! ideal jet:
 			do i=1-o_halo,jpp+o_halo
 				u_nudge(i)=u_jet* exp(-0.5_wp*(theta(i)-theta_jet*pi/180._wp)**2._wp &
-				 				/ (h_jet*pi/180._wp)**2._wp )
+				 				/ (h_jet*pi/180._wp)**2._wp ) ! + &
+								! u_jet*exp(-0.5_wp*(theta(i)-(theta_jet+12.6_wp)*pi/180._wp)**2._wp &
+				 				! / (h_jet*pi/180._wp)**2._wp )
 			enddo
 
 			case default
@@ -380,7 +382,7 @@
 		
 		! calculate Coriolis param:
 		do i=1-o_halo,ipp+o_halo
-			f_cor(i,:)=2._wp*f*sin(theta)			
+			f_cor(i,:)=2._wp*f*sin(theta)
 		enddo
 			
 		! calculate x, y, dx, dy:
@@ -410,7 +412,7 @@
 
 
 
-		! CALCULATE THE HEIGHT FIELD FROM WINDS _ MPI NEEDED TO SPAN SUB-DOMAINS		
+		! CALCULATE THE HEIGHT FIELD FROM WINDS - MPI NEEDED TO SPAN SUB-DOMAINS
 		call MPI_CART_COORDS(comm2d, id, 2, coords, error)
 		call MPI_CART_SHIFT( comm2d, 1, 1, nbottom, ntop, error)	
 		
@@ -430,7 +432,6 @@
 			height(:,jpp+1)=scale_height
 		endif
 
-		
 		do j=jpp,0,-1
 			height(:,j)=height(:,j+1)+ &	
 					0.25_wp*(f_cor(:,j+1)+f_cor(:,j))* &
@@ -490,9 +491,19 @@
 						
 							height(i-ipstart,j-jpstart) = &
 								height(i-ipstart,j-jpstart) + &
-								r*1000.e0_wp*0.6e5_wp/height(i-ipstart,j-jpstart) ! *&
+								 r*1e-2_wp/height(i-ipstart,j-jpstart) ! 1e-2
+								! r*1000.e0_wp*0.6e5_wp/height(i-ipstart,j-jpstart) ! *&
 									!abs(f_cor(i-ipstart,j-jpstart))/3e-4_wp
 						endif
+						! if ((theta(j-jpstart)*180._wp/PI) > (theta_jet+12.6-h_jet*2._wp) &
+						! .and. (theta(j-jpstart)*180._wp/PI) <(theta_jet+12.6+h_jet*2._wp)) then
+						
+						! 	height(i-ipstart,j-jpstart) = &
+						! 		height(i-ipstart,j-jpstart) + &
+						! 		 r*1e-5_wp/height(i-ipstart,j-jpstart) ! 1e-2
+						! 		! r*1000.e0_wp*0.6e5_wp/height(i-ipstart,j-jpstart) ! *&
+						! 			!abs(f_cor(i-ipstart,j-jpstart))/3e-4_wp
+						! endif
 					endif
 
 				enddo
