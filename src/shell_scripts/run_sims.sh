@@ -11,7 +11,7 @@ cd ..
 rm ../output/animations/animation.gif
 rm ../output/animations/animation.mp4
 
-for (( i=0;i<$VEL_ELEMENTS;i++)); do
+for (( i=0; i<VEL_ELEMENTS; i++)); do
 	# Runs with the hm process switched on:
 	echo "ujet = ${VEL_ARRAY[${i}]}"
     sed -e "s|output.nc|/output_ujet_${VEL_ARRAY[${i}]}.nc|" ../config/namelist.in > ../config/namelist.tmp
