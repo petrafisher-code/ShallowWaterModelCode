@@ -8,7 +8,7 @@
 	nm1%viscous_dissipation=.false.,
 	nm1%dissipate_h=.false.,
 	nm1%initial_winds=2,  ! 1==saturn_winds, 2==idealised_jet
-	nm1%u_jet=12.0,  ! speed of jet
+	nm1%u_jet=12.,  ! speed of jet
 	nm1%theta_jet=75.9, ! latitude of jet
 	nm1%h_jet=1.0, ! standard deviation of jet (width)
 	nm1%nudge=.true.,
