@@ -1,10 +1,10 @@
 #! /bin/bash
 # Batch running
 
-# uncomment NAME and one of the arrays to batch run for initial jet speed arrays
-NAME="u_jet"
-ARRAY=(8. 9. 10. 11. 12. 13. 14. 15. 16. 17. 18. 19. 20.) 
-ARRAY=(8.5 9.5 10.5 11.5 12.5 13.5 14.5 15.5 16.5 17.5 18.5 19.5) 
+# # uncomment NAME and one of the arrays to batch run for initial jet speed arrays
+# NAME="u_jet"
+# ARRAY=(8. 9. 10. 11. 12. 13. 14. 15. 16. 17. 18. 19. 20.) 
+# ARRAY=(8.5 9.5 10.5 11.5 12.5 13.5 14.5 15.5 16.5 17.5 18.5 19.5) 
 
 # # uncomment NAME and one of the arrays to batch run for initial jet width (standard deviations)
 # NAME="h_jet"
@@ -25,10 +25,10 @@ ARRAY=(8.5 9.5 10.5 11.5 12.5 13.5 14.5 15.5 16.5 17.5 18.5 19.5)
 #         0.0000000000005 0.00000000000005 0.000000000000005 0.0000000000000005 0.00000000000000005 0.000000000000000005
 #         0.0000000000000000005 0.00000000000000000005 0.000000000000000000005)
 
-# # uncomment NAME and one of the arrays to batch run for the perturbation strength
-# NAME="perturb_strength"
-# ARRAY=(0.1 0.5 1 1.5 2 2.5 3 3.5 4 4.5 5 5.5 6 6.5 7 7.5 8 8.5 9 9.5 10) 
-# ARRAY=(0.25 0.75 1.25 1.75 2.25 2.75 3.25 3.75 4.25 4.75 5.25 5.75 6.25 6.75 7.25 7.75 8.25 8.75 9.25 9.75) 
+# uncomment NAME and one of the arrays to batch run for the perturbation strength
+NAME="perturb_strength"
+ARRAY=(0.1 0.5 1 1.5 2 2.5 3 3.5 4 4.5 5 5.5 6 6.5 7 7.5 8 8.5 9 9.5 10) 
+ARRAY=(0.25 0.75 1.25 1.75 2.25 2.75 3.25 3.75 4.25 4.75 5.25 5.75 6.25 6.75 7.25 7.75 8.25 8.75 9.25 9.75) 
 
 ELEMENTS=${#ARRAY[@]} # elements in array
 
@@ -42,7 +42,17 @@ for (( i=0; i<ELEMENTS; i++)); do
 	# Runs with the hm process switched on:
 	echo "${NAME} = ${ARRAY[${i}]}"
     sed -e "s|output.nc|/output_${NAME}_${ARRAY[${i}]}.nc|" ../config/namelist.in > ../config/namelist.tmp
-	sed -e "s/${NAME}=12./${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
+    if test "${NAME}" = "u_jet"; then
+        sed -e "s/${NAME}=12./${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
+    elif test "${NAME}" = "h_jet"; then
+        sed -e "s/${NAME}=1.0/${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
+    elif test "${NAME}" = "theta_jet"; then
+        sed -e "s/${NAME}=75.9/${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
+    elif test "${NAME}" = "jet_noise"; then
+        sed -e "s/${NAME}=0.01/${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
+    elif test "${NAME}" = "perturb_strength"; then
+        sed -e "s/${NAME}=0.5/${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
+    fi
  			
     mpiexec -n 8 ./main.exe ../config/namelist.run > /tmp/std.out
     rm "../config/namelist.tmp"
