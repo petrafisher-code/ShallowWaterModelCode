@@ -59,7 +59,7 @@ for (( i=0; i<ELEMENTS; i++)); do
     # create height and streamlines figure
     echo "Creating height and streamlines figure"
     python3 height_and_streamlines.py
-    mv "../../output/frames/frame.png" "../../output/streamlines/streamlines_${NAME}_${ARRAY[${i}]}.gif" 
+    mv "../../output/frames/frame.png" "../../output/streamlines/streamlines_${NAME}_${ARRAY[${i}]}.png" 
 
     # rename output.nc file for storage
     mv "../../tests/output.nc" "../../tests/output_${NAME}_${ARRAY[${i}]}.nc"
