@@ -143,22 +143,6 @@
 		vh_new=vh_new - dt*.5_wp*(f_cor(1:ip,1:jp)*u(1:ip,1:jp) & 
 			+ u2(1:ip,1:jp)*rect(1:ip,1:jp))*(h(1:ip,1:jp)+h_new)
 
-		! Check for NaNs in h_new and set to an array of ones if any are found
-		do i = 1, ip
-			do j = 1, jp
-				if (ieee_is_nan(h_new(i,j))) then
-					print *, i, '', j
-					if (i > 1 .and. j > 1) then
-						print *, h_new(i-1,j)
-						print *, h_new(i,j-1)
-					end if
-					print *, h_new(i,j)
-					print *, " "
-					exit
-				end if
-			end do
-		end do
-
 		! re-calculate u and v.
 		u(1:ip,1:jp) = uh_new/(h_new)
 		v(1:ip,1:jp) = vh_new/h_new
