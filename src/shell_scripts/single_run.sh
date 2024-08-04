@@ -2,7 +2,7 @@
 # Single run
 
 cd ..
-# make
+make
 
 mpiexec -n 8 ./main.exe ../config/namelist.in
 mv /tmp/output.nc ../tests/output.nc
