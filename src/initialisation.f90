@@ -61,7 +61,8 @@
 	!>@param[in] add_random_height_noise - add noise to get going
 	!>@param[in] initially_geostrophic - set to geostrophic balance
 	!>@param[in] initial_winds - flag: saturn, or jet?
-	!>@param[in] ideal jet parameters: u_jet, theta_jet, h_jet
+	!>@param[in] ideal jet parameters: u_jet, jet_noise, theta_jet, h_jet
+	!>@param[in] perturbation parameters: perturb_strength
 	!>@param[in] ip - global ip (all pes)
 	!>@param[in] jp - global jp (all pes)
 	!>@param[in] wind_factor - factor to multiply mean wind by
@@ -81,6 +82,7 @@
 	!>@param[in] dims - dimensions of cartesian topology
 	!>@param[in] id - id of this PE
 	!>@param[in] comm2d - communicator for cartesian topology
+	!>@param[in] polar_vortex: whether or not to include a polar vortex
 	subroutine allocate_and_set(ipp,jpp,ntim, f, &
 				re, g, rho, dphi, dtheta, dphin,dthetan, &
 				f_cor,h,hs, u, v, &
@@ -92,12 +94,12 @@
 				u_nudge, o_halo, ipstart, jpstart, coords, &
 				inputfile, add_random_height_noise, &
 				initially_geostrophic, initial_winds, &
-				u_jet, theta_jet, h_jet, &
+				u_jet, jet_noise, theta_jet, h_jet, perturb_strength, &
 				ip, jp, &
 				wind_factor, wind_shift, wind_reduce, runtime, &
 				dt_nm, grav, rho_nm, re_nm, &
 				rotation_period_hours, scale_height, slat, nlat, &
-				slat_thresh, nlat_thresh, dims, id, comm2d)
+				slat_thresh, nlat_thresh, dims, id, comm2d, polar_vortex)
 				
 		use numerics_type
 		use mpi
@@ -121,13 +123,13 @@
 
 		! namelist variables used to set the grid
 		character (len=*), intent(in) :: inputfile
-		logical, intent(in) :: add_random_height_noise, initially_geostrophic
+		logical, intent(in) :: add_random_height_noise, initially_geostrophic, polar_vortex
 		integer(i4b), intent(in) :: initial_winds, ip, jp
 		real(wp), intent(in) :: wind_factor, wind_shift, wind_reduce, runtime, &
 							dt_nm, grav, rho_nm, re_nm, &
 							rotation_period_hours, scale_height, &
 							slat_thresh, nlat_thresh, &
-							u_jet, theta_jet, h_jet
+							u_jet, jet_noise, theta_jet, h_jet, perturb_strength
 		real(wp), intent(inout) :: slat, nlat
 		integer(i4b), dimension(2), intent(in) :: dims
 		integer(i4b), dimension(2), intent(inout) :: coords
@@ -369,10 +371,15 @@
 
 			case (2) ! ideal jet:
 			do i=1-o_halo,jpp+o_halo
-				u_nudge(i)=u_jet* exp(-0.5_wp*(theta(i)-theta_jet*pi/180._wp)**2._wp &
-				 				/ (h_jet*pi/180._wp)**2._wp ) ! + &
-								! u_jet*exp(-0.5_wp*(theta(i)-(theta_jet+12.6_wp)*pi/180._wp)**2._wp &
-				 				! / (h_jet*pi/180._wp)**2._wp )
+				if (polar_vortex) then
+					u_nudge(i)=u_jet* exp(-perturb_strength*(theta(i)-theta_jet*pi/180._wp)**2._wp &
+									/ (h_jet*pi/180._wp)**2._wp ) + &
+									u_jet*exp(-perturb_strength*(theta(i)-(theta_jet+12.6_wp)*pi/180._wp)**2._wp &
+									/ (h_jet*pi/180._wp)**2._wp )
+				else
+					u_nudge(i)=u_jet* exp(-perturb_strength*(theta(i)-theta_jet*pi/180._wp)**2._wp &
+					/ (h_jet*pi/180._wp)**2._wp )
+				endif
 			enddo
 
 			case default
@@ -470,8 +477,7 @@
 						
 							height(i-ipstart,j-jpstart) = &
 								height(i-ipstart,j-jpstart) + &
-								r*1000.e0_wp*0.6e5_wp/height(i-ipstart,j-jpstart) ! *&
-									!abs(f_cor(i-ipstart,j-jpstart))/3e-4_wp
+								r*1000_wp*0.6e5_wp/height(i-ipstart,j-jpstart)
 						endif
 					endif
 
@@ -491,19 +497,15 @@
 						
 							height(i-ipstart,j-jpstart) = &
 								height(i-ipstart,j-jpstart) + &
-								 r*1e-2_wp/height(i-ipstart,j-jpstart) ! 1e-2
-								! r*1000.e0_wp*0.6e5_wp/height(i-ipstart,j-jpstart) ! *&
-									!abs(f_cor(i-ipstart,j-jpstart))/3e-4_wp
+								 r*jet_noise/height(i-ipstart,j-jpstart) 
 						endif
-						! if ((theta(j-jpstart)*180._wp/PI) > (theta_jet+12.6-h_jet*2._wp) &
-						! .and. (theta(j-jpstart)*180._wp/PI) <(theta_jet+12.6+h_jet*2._wp)) then
+						if (polar_vortex .and. (theta(j-jpstart)*180._wp/PI) > (theta_jet+12.6-h_jet*2._wp) &
+						.and. (theta(j-jpstart)*180._wp/PI) <(theta_jet+12.6+h_jet*2._wp)) then
 						
-						! 	height(i-ipstart,j-jpstart) = &
-						! 		height(i-ipstart,j-jpstart) + &
-						! 		 r*1e-5_wp/height(i-ipstart,j-jpstart) ! 1e-2
-						! 		! r*1000.e0_wp*0.6e5_wp/height(i-ipstart,j-jpstart) ! *&
-						! 			!abs(f_cor(i-ipstart,j-jpstart))/3e-4_wp
-						! endif
+							height(i-ipstart,j-jpstart) = &
+								height(i-ipstart,j-jpstart) + &
+								 r*1e-5_wp/height(i-ipstart,j-jpstart)
+						endif
 					endif
 
 				enddo
