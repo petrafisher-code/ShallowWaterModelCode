@@ -3,7 +3,8 @@
 
 # uncomment NAME and one of the arrays to batch run for initial jet speed arrays
 NAME="u_jet"
-ARRAY=(8. 10. 12. 15.) 
+ARRAY=(8. 9. 10. 11. 12. 13. 14. 15. 16. 17. 18. 19. 20.) 
+ARRAY=(8.5 9.5 10.5 11.5 12.5 13.5 14.5 15.5 16.5 17.5 18.5 19.5) 
 
 # # uncomment NAME and one of the arrays to batch run for initial jet width (standard deviations)
 # NAME="h_jet"
