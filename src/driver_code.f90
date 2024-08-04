@@ -60,6 +60,7 @@
 	!>@param[in] lat_eq: latitude north and south over which to apply vis_eq
 	!>@param[in] dims,id, world_process, ring_comm: mpi variables
 	!>@param[in] new_eqs: whether or not to use the new equations
+	!>@param[in] polar_vortex: whether or not to include a polar vortex
     subroutine model_driver(ip,ipp, jp,jpp, ntim, f, &
 				re, g, rho, dphi, dtheta, dphin, dthetan, &
 				f_cor,h,hs, u, v, &
@@ -72,14 +73,14 @@
 				new_file,outputfile, output_interval, nudge, nudge_tau, &
 				subgrid_model, viscous_dissipation, dissipate_h,vis, cvis, &
 				vis_eq, lat_eq, &
-				dims,id, world_process, rank, ring_comm, new_eqs)
+				dims,id, world_process, rank, ring_comm, new_eqs, polar_vortex)
 		use numerics_type
 		use mpi_module
 		use advection
 
 		implicit none
 		logical, intent(inout) :: new_file
-		logical, intent(in) :: nudge, viscous_dissipation, dissipate_h, new_eqs
+		logical, intent(in) :: nudge, viscous_dissipation, dissipate_h, new_eqs, polar_vortex
 		integer(i4b), intent(in) :: ip,ipp, jp,jpp, ntim, o_halo, ipstart, jpstart, &
 									subgrid_model
 		integer(i4b), intent(in) :: id, world_process, ring_comm, rank

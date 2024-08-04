@@ -36,13 +36,14 @@
             logical :: add_random_height_noise, &
             			initially_geostrophic, &
             			viscous_dissipation, &
-            			dissipate_h, nudge, restart, new_eqs
+            			dissipate_h, nudge, restart, new_eqs, polar_vortex
             integer(i4b) :: initial_winds, ip, jp, subgrid_model
             real(wp) :: wind_factor, wind_shift, wind_reduce, vis, &
             			runtime, dt, output_interval, &
             			grav, rho, Re, rotation_period_hours, scale_height, &
             			slat, nlat, slat_thresh, nlat_thresh, nudge_timescale, &
-            			u_jet, theta_jet, h_jet, cvis, vis_eq, lat_eq
+            			u_jet, jet_noise, theta_jet, h_jet, perturb_strength, cvis, &
+						vis_eq, lat_eq
         end type namelist_input
 
 

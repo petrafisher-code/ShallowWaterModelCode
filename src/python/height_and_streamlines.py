@@ -1,5 +1,5 @@
 """
-Module Name: height_and_stREamlines.py
+Module Name: height_and_streamlines.py
 
 Description:
 This module contains code to analyse the height and
@@ -72,7 +72,10 @@ plt.ylim((-2e7,2e7))
 # Adding the labels
 max_h_magnitude = np.max(np.abs(h))
 scale = 10 ** np.floor(np.log10(max_h_magnitude))
-scaled_label = f'h (10$^{int(np.log10(scale))}$ m)'
+if scale != 1.0:
+    scaled_label = f'h (10$^{int(np.log10(scale))}$ m)'
+else:
+    scaled_label = 'h (10 m)' # pylint: disable=C0103
 cbar=plt.colorbar(hmap)
 cbar.set_label(scaled_label)
 
