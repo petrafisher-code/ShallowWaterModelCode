@@ -13,8 +13,8 @@ ELEMENTS2=${#ARRAY2[@]} # elements in second array
 cd ..
 # make
 
-for (( i=0;i<$ELEMENTS1;i++)); do
-	for (( j=0;j<$ELEMENTS2;j++)); do
+for (( i=0; i<ELEMENTS1; i++)); do
+	for (( j=0; j<ELEMENTS2; j++)); do
 			# Runs with the hm process switched on:
 	 		echo "${NAME1} = ${ARRAY1[${i}]},    ${NAME2} = ${ARRAY1[${i}]}"
             sed -e "s|output.nc|/output_${i}_${j}.nc|" ../config/namelist.in > ../config/namelist.tmp
