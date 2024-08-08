@@ -14,7 +14,7 @@ for((k=0; k<ELEMENTS_ALL_NAMES; k++)); do
 
     NAME=${ALL_NAMES[${k}]}
     if test "${NAME}" = "u_jet"; then
-        ARRAY=(8. 9. 10. 11. 12. 13. 14. 15. 16. 17. 18. 19. 20. 8.5 9.5 10.5 11.5 12.5 13.5 14.5 15.5 16.5 17.5 18.5 19.5)
+        ARRAY=(6. 6.5 7. 7.5 8. 8.5 9. 9.5 10. 10.5 11. 11.5 12. 12.5 13. 13.5 14. 14.4 15. 15.5 16. 16.5 17. 17.5 18. 18.5 19. 19.5 20. 21. 22. 23. 24. 25. 26. 27. 28. 29. 30. 31. 32.)
     elif test "${NAME}" = "h_jet"; then
         ARRAY=(0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 0.05 0.15 0.25 0.35 0.45 0.55 0.65 0.75 0.85 0.95 1.05 1.15 1.25 1.35 1.45 1.55 1.65 1.75 1.85 1.95)
     elif test "${NAME}" = "theta_jet"; then
@@ -34,7 +34,7 @@ for((k=0; k<ELEMENTS_ALL_NAMES; k++)); do
         echo "${NAME} = ${ARRAY[${i}]}"
         sed -e "s|output.nc|/output_${NAME}_${ARRAY[${i}]}.nc|" ../config/namelist.in > ../config/namelist.tmp
         if test "${NAME}" = "u_jet"; then
-            sed -e "s/${NAME}=12./${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
+            sed -e "s/${NAME}=15./${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
         elif test "${NAME}" = "h_jet"; then
             sed -e "s/${NAME}=1.0/${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
         elif test "${NAME}" = "theta_jet"; then
