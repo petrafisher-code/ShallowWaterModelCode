@@ -93,36 +93,22 @@
 		Uy = uh*v1
 		uh_mid_xt(0:ip,:) = 0.5_wp*(uh(1:ip+1,1:jp)+uh(0:ip,1:jp)) &
 		-(0.5_wp*dt/(recqdp_s(0:ip,1:jp)))* &
-			(Ux(1:ip+1,1:jp)-Ux(0:ip,1:jp)) !&
-			!+0.125_wp*dt*(f_cor(1:ip+1,1:jp)+f_cor(0:ip,1:jp))* &
-			!(vh(1:ip+1,1:jp)+vh(0:ip,1:jp)) &
-			!+0.125_wp*dt*(u(1:ip+1,1:jp)+u(0:ip,1:jp))*(vh(1:ip+1,1:jp)+vh(0:ip,1:jp)) &
-			!*(rect(1:ip+1,1:jp)+rect(0:ip,1:jp))
+			(Ux(1:ip+1,1:jp)-Ux(0:ip,1:jp))
 		
 		uh_mid_yt = 0.5_wp*(uh(1:ip,1:jp+1)+uh(1:ip,0:jp)) &
 		-(0.5_wp*dt/(recqdq_s(1:ip,0:jp)))* &
-			(Uy(1:ip,1:jp+1)-Uy(1:ip,0:jp)) !&
-			!+0.125_wp*dt*(f_cor(1:ip,1:jp+1)+f_cor(1:ip,0:jp))* &
-			!(vh(1:ip,1:jp+1)+vh(1:ip,0:jp)) &
-			!+0.125_wp*dt*(u(1:ip,1:jp+1)+u(1:ip,0:jp))*(vh(1:ip,1:jp+1)+vh(1:ip,0:jp)) &
-			!*(rect(1:ip,1:jp+1)+rect(1:ip,0:jp))
+			(Uy(1:ip,1:jp+1)-Uy(1:ip,0:jp))
 
 		! v-theta, or v momentum equation (calculate mid-point values at 0.5*dt):
 		Vx = uh*v
 		Vy = vh1*v
 		Vy2 = 0.5_wp*g*h**2
 		vh_mid_xt(0:ip,1:jp) = 0.5_wp*(vh(1:ip+1,1:jp)+vh(0:ip,1:jp)) &
-		-(0.5_wp*dt/(recqdp_s(0:ip,1:jp)))*(Vx(1:ip+1,1:jp)-Vx(0:ip,1:jp)) !&
-		!-0.125_wp*dt*(f_cor(1:ip+1,1:jp)+f_cor(0:ip,1:jp))*(uh(1:ip+1,1:jp)+uh(0:ip,1:jp)) &
-		!-0.125_wp*dt*(u(1:ip+1,1:jp)+u(0:ip,1:jp))*(uh(1:ip+1,1:jp)+uh(0:ip,1:jp)) &
-		!*(rect(1:ip+1,1:jp)+rect(0:ip,1:jp))
+		-(0.5_wp*dt/(recqdp_s(0:ip,1:jp)))*(Vx(1:ip+1,1:jp)-Vx(0:ip,1:jp))
 
 		vh_mid_yt(1:ip,0:jp) = 0.5_wp*(vh(1:ip,1:jp+1)+vh(1:ip,0:jp)) &
 		-(0.5_wp*dt/(recqdq_s(1:ip,0:jp)))*(Vy(1:ip,1:jp+1)-Vy(1:ip,0:jp)) &
-		-(0.5_wp*dt/(redq_s(1:ip,0:jp)))*(Vy2(1:ip,1:jp+1)-Vy2(1:ip,0:jp)) !&
-		!-0.125_wp*dt*(f_cor(1:ip,1:jp+1)+f_cor(1:ip,0:jp))*(uh(1:ip,1:jp+1)+uh(1:ip,0:jp)) &
-		!-0.125_wp*dt*(u(1:ip,1:jp+1)+u(1:ip,0:jp))*(uh(1:ip,1:jp+1)+uh(1:ip,0:jp)) &
-		!*(rect(1:ip,1:jp+1)+rect(1:ip,0:jp))
+		-(0.5_wp*dt/(redq_s(1:ip,0:jp)))*(Vy2(1:ip,1:jp+1)-Vy2(1:ip,0:jp))
 
 		! Now use the mid-point values to predict the values at the next timestep
 		! continuity:
@@ -151,13 +137,10 @@
 		! add on Coriolis and contribution of orography to pressure gradient:
 		uv = u*v
 		u2 = u*u
-		! uh_new=uh_new + dt*.5_wp*(f_cor(1:ip,1:jp)*v(1:ip,1:jp) & 
-		! 	+ uv(1:ip,1:jp)*rect(1:ip,1:jp))*(h(1:ip,1:jp)+h_new)
+
 		uh_new=uh_new + dt*(f_cor(1:ip,1:jp)*v(1:ip,1:jp) & 
 			+ uv(1:ip,1:jp)*rect(1:ip,1:jp))*h(1:ip,1:jp)
 
-		! vh_new=vh_new - dt*.5_wp*(f_cor(1:ip,1:jp)*u(1:ip,1:jp) & 
-		! 	+ u2(1:ip,1:jp)*rect(1:ip,1:jp))*(h(1:ip,1:jp)+h_new)
 		vh_new=vh_new - dt*(f_cor(1:ip,1:jp)*u(1:ip,1:jp) & 
 			+ u2(1:ip,1:jp)*rect(1:ip,1:jp))*h(1:ip,1:jp)
 
