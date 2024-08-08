@@ -2,10 +2,10 @@
 # Runs a batch while altering two variables
 
 NAME1="Re"
-ARRAY1=(0.8 1.0 1.2) 
+ARRAY1=(0.68 0.7 0.72 0.74 0.76 0.78 0.8 0.82 0.84 0.86 0.88 0.9 0.92 0.94 0.96 0.98 1 1.02 1.04 1.06 1.08) 
 
 NAME2="grav"
-ARRAY2=(1366 1466 1566) 
+ARRAY2=(1344 1368 1392 1416 1440 1464 1488 1512 1536 1560 1584 1608 1632 1656 1680 1704 1728 1752 1776 1800 1824) 
 
 ELEMENTS1=${#ARRAY1[@]} # elements in first array
 ELEMENTS2=${#ARRAY2[@]} # elements in second array
