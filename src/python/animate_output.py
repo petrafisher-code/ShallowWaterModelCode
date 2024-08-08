@@ -117,7 +117,7 @@ for it1 in range(1, len(time) + 1, 4):
         "Vorticity",
     )
     ax3 = make_maps(v[it, :, :], f.add_subplot(143), -0.7, 0.7, "v", "v")
-    ax4 = make_maps(u[it, :, :], f.add_subplot(144), 0, 5, "u", "u")
+    ax4 = make_maps(u[it, :, :], f.add_subplot(144), 0, 6, "u", "u")
 
     ITER += 1
     plt.suptitle(f"t={time[it]/86400:.2f} days", fontsize=8, y=0.25)

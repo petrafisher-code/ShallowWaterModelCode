@@ -137,11 +137,12 @@
 		! add on Coriolis and contribution of orography to pressure gradient:
 		uv = u*v
 		u2 = u*u
-		uh_new=uh_new + dt*.5_wp*(f_cor(1:ip,1:jp)*v(1:ip,1:jp) & 
-			- uv(1:ip,1:jp)*rect(1:ip,1:jp))*(h(1:ip,1:jp)+h_new)
 
-		vh_new=vh_new - dt*.5_wp*(f_cor(1:ip,1:jp)*u(1:ip,1:jp) & 
-			+ u2(1:ip,1:jp)*rect(1:ip,1:jp))*(h(1:ip,1:jp)+h_new)
+		uh_new=uh_new + dt*(f_cor(1:ip,1:jp)*v(1:ip,1:jp) & 
+			+ uv(1:ip,1:jp)*rect(1:ip,1:jp))*h(1:ip,1:jp)
+
+		vh_new=vh_new - dt*(f_cor(1:ip,1:jp)*u(1:ip,1:jp) & 
+			+ u2(1:ip,1:jp)*rect(1:ip,1:jp))*h(1:ip,1:jp)
 
 		! re-calculate u and v.
 		u(1:ip,1:jp) = uh_new/(h_new)
