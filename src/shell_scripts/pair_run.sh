@@ -34,7 +34,7 @@ for (( i=0; i<ELEMENTS1; i++)); do
             mv "../../output/frames/frame.png" "../../output/streamlines/streamlines_${NAME1}_${ARRAY1[${i}]}_${NAME2}_${ARRAY2[${j}]}.png" 
 
             # rename output.nc file for storage
-            mv "../../tests/output.nc" "../../tests/output_${NAME1}_${ARRAY1[${i}]}_${NAME2}_${ARRAY2[${i}]}.nc"
+            mv "../../tests/output.nc" "../../tests/output_${NAME1}_${ARRAY1[${i}]}_${NAME2}_${ARRAY2[${j}]}.nc"
             cd ..
  			
 	done
