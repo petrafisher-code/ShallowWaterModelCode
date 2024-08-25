@@ -84,14 +84,19 @@ def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, title_var):  # 
     cbar.ax.xaxis.get_offset_text().set_size(0)
     cbar.ax.xaxis.get_offset_text().set_color("white")
 
-    # Get the scientific notation exponent
+    # Get the scientific notation exponent for the data range and range limits
     scientific_power = int(np.floor(np.log10(max(abs(np.min(data)), abs(np.max(data))))))
+    scientific_power_lim = int(np.floor(np.log10(max(abs(vmin_var), abs(vmax_var)))))
 
     # Set label and title
-    if scientific_power == 0:
+    if scientific_power == 0 and scientific_power_lim == 0:
         scientific_label = f"{colourbar_label_var}"
+    elif scientific_power == 0 and scientific_power_lim != 0:
+        scientific_label = (
+            f"{colourbar_label_var} ($\u00d7$10$^{{{scientific_power_lim}}}$)"
+        )
     elif scientific_power == 1:
-        scientific_label = f"{colourbar_label_var}"
+        scientific_label = f"{colourbar_label_var} ($\u00d7$10)"
     else:
         scientific_label = (
             f"{colourbar_label_var} ($\u00d7$10$^{{{scientific_power}}}$)"
