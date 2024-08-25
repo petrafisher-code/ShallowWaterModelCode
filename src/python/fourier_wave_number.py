@@ -23,6 +23,8 @@ matplotlib.use("Agg")
 
 username = getpass.getuser()
 
+TIME_SCALE = 2707788
+
 # TODO: FIX AND TEST THIS MODULE pylint: disable=W0511
 
 
@@ -43,7 +45,7 @@ def fourier_wave_number(file_name):  # pylint: disable=R0914 disable=R0915
     phaseold = np.zeros((n_files, np1))
     for k in range(n_files):
         nc = NetCDFFile(file_name[k])
-        dt_sec = nc["time"][1] - nc["time"][0]
+        dt_sec = nc["time"][1]*TIME_SCALE - nc["time"][0]*TIME_SCALE
         _, c = np.shape(nc["vort"][0, :, :])
         fs = c
         # time_period = 1.0 / fs
