@@ -40,7 +40,7 @@ def dominant_mode(data):
         mode : int
             The number of polygon sides corresponding to the strongest mode.
     """
-    # Compute the 2D Fourier Transform of the data
+    # Compute the Fourier Transform of the data
     data_fft = fft2(data)
     data_fft_shifted = fftshift(data_fft)
 
@@ -68,7 +68,7 @@ def dominant_mode(data):
     strongest_peak = peaks[np.argmax(radial_magnitude[peaks])]
 
     # The mode corresponds to the angular frequency of the strongest peak
-    mode = strongest_peak*2
+    mode = strongest_peak * 2
     print(mode)
 
     return mode
@@ -93,7 +93,7 @@ def analyze_modes_over_time(data, time_steps):
 
     # Plot the strongest mode over time
     plt.figure(figsize=(10, 5))
-    plt.plot(time_steps, modes)  # Added markers for better visualization
+    plt.plot(time_steps, modes, color="purple")
     plt.xlabel("Time (days)")
     plt.ylabel("Strongest Mode (Number of Polygon Sides)")
     plt.title("Strongest Mode Over Time")

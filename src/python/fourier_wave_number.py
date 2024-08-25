@@ -45,7 +45,7 @@ def fourier_wave_number(file_name):  # pylint: disable=R0914 disable=R0915
     phaseold = np.zeros((n_files, np1))
     for k in range(n_files):
         nc = NetCDFFile(file_name[k])
-        dt_sec = nc["time"][1]*TIME_SCALE - nc["time"][0]*TIME_SCALE
+        dt_sec = nc["time"][1] * TIME_SCALE - nc["time"][0] * TIME_SCALE
         _, c = np.shape(nc["vort"][0, :, :])
         fs = c
         # time_period = 1.0 / fs
@@ -77,10 +77,7 @@ def fourier_wave_number(file_name):  # pylint: disable=R0914 disable=R0915
         # we want the movement of the wave train around the planet,
         # so divide by number of waves.
         phase[k, :] = (
-            np.unwrap(phaseold[k, :] * np.pi / 180.0)
-            * 180.0
-            / np.pi
-            / (wave_number[k, :])
+            np.unwrap(phaseold[k, :] * np.pi / 180.0) * 180.0 / np.pi / (wave_number[k, :])
         )
         rotation_rate[k, :] = (
             -np.diff(phase[k, :], n=1, axis=0) / dt_sec * 86400.0 * 365.25 / 360
@@ -155,9 +152,7 @@ if __name__ == "__main__":
                 mean_rot_main[j, i] = np.nan
                 std_rot_main[j, i] = np.nan
 
-    h_plot = plt.scatter(
-        np.mgrid[1:10], mean_rot_main[j, :], s=40, c=U_JETS[THIS_ONE] * np.ones(9)
-    )
+    h_plot = plt.scatter(np.mgrid[1:10], mean_rot_main[j, :], s=40, c=U_JETS[THIS_ONE] * np.ones(9))
     plt.xlabel("wave number (per full rotation)")
     plt.ylabel("mean rotation rate (rotations per year)")
     plt.clim((np.min(U_JETS), np.max(U_JETS)))

@@ -37,7 +37,7 @@ vort = nc.variables["vort"][:]
 h = nc.variables["h"][:]
 v = nc.variables["v"][:]
 u = nc.variables["u"][:]
-time = nc.variables["time"][:]*TIME_SCALE
+time = nc.variables["time"][:] * TIME_SCALE
 
 if not os.path.exists("../../output/frames"):
     os.mkdir("../../output/frames")
@@ -92,15 +92,11 @@ def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, title_var):  # 
     if scientific_power == 0 and scientific_power_lim == 0:
         scientific_label = f"{colourbar_label_var}"
     elif scientific_power == 0 and scientific_power_lim != 0:
-        scientific_label = (
-            f"{colourbar_label_var} ($\u00d7$10$^{{{scientific_power_lim}}}$)"
-        )
+        scientific_label = f"{colourbar_label_var} ($\u00d7$10$^{{{scientific_power_lim}}}$)"
     elif scientific_power == 1:
         scientific_label = f"{colourbar_label_var} ($\u00d7$10)"
     else:
-        scientific_label = (
-            f"{colourbar_label_var} ($\u00d7$10$^{{{scientific_power}}}$)"
-        )
+        scientific_label = f"{colourbar_label_var} ($\u00d7$10$^{{{scientific_power}}}$)"
     cbar.set_label(scientific_label, fontsize=8)
     ax.set_title(title_var, fontsize=8)
 
