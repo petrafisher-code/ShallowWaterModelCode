@@ -11,7 +11,7 @@ ELEMENTS1=${#ARRAY1[@]} # elements in first array
 ELEMENTS2=${#ARRAY2[@]} # elements in second array
 
 cd ..
-# make
+make
 
 for (( i=0; i<ELEMENTS1; i++)); do
 	for (( j=0; j<ELEMENTS2; j++)); do
