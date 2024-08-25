@@ -5,7 +5,7 @@
 ALL_NAMES=("u_jet" "h_jet" "theta_jet" "jet_noise" "perturb_strength")
 ELEMENTS_ALL_NAMES=${#ALL_NAMES[@]} # elements in array
 
-# cd .. && make
+cd .. && make
 # rm ../output/animations/animation.gif
 # rm ../output/animations/animation.mp4
 
@@ -32,21 +32,21 @@ for((k=0; k<ELEMENTS_ALL_NAMES; k++)); do
     for (( i=0; i<ELEMENTS; i++)); do
         # Runs with the hm process switched on:
         echo "${NAME} = ${ARRAY[${i}]}"
-        sed -e "s|output.nc|/output_${NAME}_${ARRAY[${i}]}.nc|" ../config/namelist.in > ../config/namelist.tmp
+        sed -e "s|output.nc|/output_${NAME}_${ARRAY[${i}]}.nc|" ../config/namelist.in > ../config/namelist_b.tmp
         if test "${NAME}" = "u_jet"; then
-            sed -e "s/${NAME}=15./${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
+            sed -e "s/${NAME}=15./${NAME}=${ARRAY[${i}]}/" ../config/namelist_b.tmp > ../config/namelist_b.run	
         elif test "${NAME}" = "h_jet"; then
-            sed -e "s/${NAME}=1.0/${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
+            sed -e "s/${NAME}=1.0/${NAME}=${ARRAY[${i}]}/" ../config/namelist_b.tmp > ../config/namelist_b.run	
         elif test "${NAME}" = "theta_jet"; then
-            sed -e "s/${NAME}=75.9/${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
+            sed -e "s/${NAME}=75.9/${NAME}=${ARRAY[${i}]}/" ../config/namelist_b.tmp > ../config/namelist_b.run	
         elif test "${NAME}" = "jet_noise"; then
-            sed -e "s/${NAME}=0.01/${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
+            sed -e "s/${NAME}=0.01/${NAME}=${ARRAY[${i}]}/" ../config/namelist_b.tmp > ../config/namelist_b.run	
         elif test "${NAME}" = "perturb_strength"; then
-            sed -e "s/${NAME}=0.5/${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
+            sed -e "s/${NAME}=0.5/${NAME}=${ARRAY[${i}]}/" ../config/namelist_b.tmp > ../config/namelist_b.run	
         fi
                 
-        mpiexec -n 8 ./main.exe ../config/namelist.run > /tmp/std.out
-        rm "../config/namelist.tmp"
+        mpiexec -n 8 ./main.exe ../config/namelist_b.run > /tmp/std.out
+        rm "../config/namelist_b.tmp"
         mv "/tmp/output_${NAME}_${ARRAY[${i}]}.nc" "../tests/output.nc"
 
         # prepare to run python files
