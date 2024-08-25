@@ -23,7 +23,7 @@ FONTSIZE = 15
 ujet_values = [10, 15, 20]
 file_paths = [f"../../tests/output_ujet_{ujet}..nc" for ujet in ujet_values]
 
-# Define the latitude range (70 to 80 degrees)
+# Define the latitude range (degrees)
 LAT_MIN = 70
 LAT_MAX = 80
 

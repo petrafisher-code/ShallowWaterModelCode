@@ -22,9 +22,8 @@ FONTSIZE = 15
 # Load the NetCDF file
 nc = NetCDFFile("../../tests/output.nc")
 
-# Extract the relevant variables
-lats = nc.variables["theta"][:]  # Latitudes
-u = nc.variables["u"][:]  # u velocities
+lats = nc.variables["theta"][:]
+u = nc.variables["u"][:]
 
 # Define the latitude range (65 to 86.5 degrees)
 LAT_MIN = 65
