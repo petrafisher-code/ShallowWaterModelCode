@@ -36,7 +36,7 @@
             logical :: add_random_height_noise, &
             			initially_geostrophic, &
             			viscous_dissipation, &
-            			dissipate_h, nudge, restart, new_eqs, polar_vortex
+            			dissipate_h, nudge, restart, new_eqs, noise_stability_test, polar_vortex
             integer(i4b) :: initial_winds, ip, jp, subgrid_model
             real(wp) :: wind_factor, wind_shift, wind_reduce, vis, &
             			runtime, dt, output_interval, &

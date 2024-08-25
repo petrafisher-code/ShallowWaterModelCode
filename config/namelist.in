@@ -40,4 +40,5 @@
 	nm1%slat_thresh=65.,
 	nm1%nlat_thresh=86.5,
 	nm1%new_eqs=.true,
+	nm1%noise_stability_test=.false,
 	nm1%polar_vortex=.false/
