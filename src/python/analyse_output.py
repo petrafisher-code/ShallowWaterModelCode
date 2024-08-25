@@ -34,11 +34,11 @@ for j, value in enumerate(c_vis):
     # fileNames = [
     #     "../../tests/output_" + str(i) + "_" + str(j) + ".nc" for i in range(len(u_jet))
     # ]
-    fileNames = ["../../tests/82_output.nc"]
+    filenames = ["../../tests/output.nc"]
 
     ax = plt.subplot(spy, spx, j + 1)
 
-    fourier_wave_number.do_analysis01(fileNames, u_jet)
+    fourier_wave_number.do_analysis01(filenames, u_jet)
     # same for each value of c_cvis
     normal_modes_compare.normal_modes_compare(u_jet, 1)
     plt.title("Full analysis")

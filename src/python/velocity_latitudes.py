@@ -54,7 +54,7 @@ else:
     average_u = np.mean(selected_u, axis=1)
 
     # Plotting the average u velocity against latitude
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(8, 6))
     plt.plot(average_u, selected_lats, color="purple", marker="o")
     plt.ylabel("Latitude (Degrees)", fontsize=FONTSIZE)
     plt.xlabel(r"Average Zonal Velocity ($\times 20 \, \text{ms}^{-1}$)", fontsize=FONTSIZE)
