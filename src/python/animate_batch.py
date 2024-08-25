@@ -38,10 +38,7 @@ u_jet = [50.0, 100.0, 150]
 c_vis = [0.0, 0.1, 0.2, 1.0]
 
 fileNames = [
-    [
-        "../../tests/output_" + str(i) + "_" + str(j) + ".nc"
-        for j in range(len(c_vis))
-    ]
+    ["../../tests/output_" + str(i) + "_" + str(j) + ".nc" for j in range(len(c_vis))]
     for i in range(len(u_jet))
 ]
 
@@ -112,9 +109,5 @@ os.system(
     + "/animation_batch.mp4"
 )
 os.system(
-    "ffmpeg -i /tmp/"
-    + username
-    + "/animation_batch.mp4  /tmp/"
-    + username
-    + "/animation_batch.gif"
+    "ffmpeg -i /tmp/" + username + "/animation_batch.mp4  /tmp/" + username + "/animation_batch.gif"
 )

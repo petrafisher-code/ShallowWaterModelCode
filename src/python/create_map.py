@@ -2,18 +2,19 @@
 Module Name: create_map.py
 
 Description:
-Using the mpl_toolkits Basemap tool to create a 
+Using the mpl_toolkits Basemap tool to create a
 Basemap object, draw meridians and parallels,
-and return this object along with the x and y 
+and return this object along with the x and y
 map coordinate matrices.
 """
 
 import numpy as np
 from mpl_toolkits.basemap import Basemap
 
+
 def create_map_func(lons, lats, satellite_height=3000000, satellite_angle=90):
     """
-    Draw an orthographic map projection with perspective of satellite 
+    Draw an orthographic map projection with perspective of satellite
     looking down at 50N, 100W.
 
     Parameters:
@@ -44,7 +45,7 @@ def create_map_func(lons, lats, satellite_height=3000000, satellite_angle=90):
     basemap.drawparallels(np.arange(-90, 90, 30))
 
     # Make sure that map boundary is not clipped by the axes
-    circle = basemap.drawmapboundary(linewidth=0.75, color='k')
+    circle = basemap.drawmapboundary(linewidth=0.75, color="k")
     circle.set_clip_on(False)
 
     # Create meshgrid

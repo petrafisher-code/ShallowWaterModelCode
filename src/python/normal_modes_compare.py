@@ -21,7 +21,8 @@ username = getpass.getuser()
 
 # TODO: FIX AND TEST THIS MODULE pylint: disable=W0511
 
-def normal_modes_compare(u_jets, flag): # pylint: disable=R0914 disable=R0915
+
+def normal_modes_compare(u_jets, flag):  # pylint: disable=R0914 disable=R0915
     """
     normal mode analysis of a gaussian jet - see Mak, Atmospheric Dynamics, page 229
     """
@@ -42,7 +43,7 @@ def normal_modes_compare(u_jets, flag): # pylint: disable=R0914 disable=R0915
     lat_low = 65  # lowest
     re = 5.4155760e7  # radius of saturn in this region (due to squashed spheriod)
     h_jet = 1.0  # standard deviation of jet
-    lat_jet = 77  # latitude of the jet
+    lat_jet = 75.9  # latitude of the jet
     n_ks = 36  # calculate the growth factor for this many k-values
 
     for i, u_jet in enumerate(u_jets):
@@ -120,10 +121,7 @@ def normal_modes_compare(u_jets, flag): # pylint: disable=R0914 disable=R0915
             h.append(
                 plt.plot(
                     np.mgrid[1 : n_ks + 1],
-                    (
-                        -sigmas_max_i[:, 0]
-                        / (2.0 * np.pi * np.mgrid[1 : n_ks + 1] / x_len)
-                    )
+                    (-sigmas_max_i[:, 0] / (2.0 * np.pi * np.mgrid[1 : n_ks + 1] / x_len))
                     * 86400.0
                     * 365.25
                     / x_len,
@@ -133,10 +131,7 @@ def normal_modes_compare(u_jets, flag): # pylint: disable=R0914 disable=R0915
             h.append(
                 plt.plot(
                     np.mgrid[1 : n_ks + 1],
-                    (
-                        -sigmas_max_i[:, 1]
-                        / (2.0 * np.pi * np.mgrid[1 : n_ks + 1] / x_len)
-                    )
+                    (-sigmas_max_i[:, 1] / (2.0 * np.pi * np.mgrid[1 : n_ks + 1] / x_len))
                     * 86400.0
                     * 365.25
                     / x_len,
@@ -146,10 +141,7 @@ def normal_modes_compare(u_jets, flag): # pylint: disable=R0914 disable=R0915
             h.append(
                 plt.plot(
                     np.mgrid[1 : n_ks + 1],
-                    (
-                        -sigmas_max_i[:, 2]
-                        / (2.0 * np.pi * np.mgrid[1 : n_ks + 1] / x_len)
-                    )
+                    (-sigmas_max_i[:, 2] / (2.0 * np.pi * np.mgrid[1 : n_ks + 1] / x_len))
                     * 86400.0
                     * 365.25
                     / x_len,
@@ -166,9 +158,7 @@ def normal_modes_compare(u_jets, flag): # pylint: disable=R0914 disable=R0915
             # third largest
             h.append(plt.plot(np.mgrid[1 : n_ks + 1], sigmas_max[:, 2], ":"))
             # sum of all
-            h.append(
-                plt.plot(np.mgrid[1 : n_ks + 1], np.sum(sigmas_max[:, :], axis=1), lw=3)
-            )
+            h.append(plt.plot(np.mgrid[1 : n_ks + 1], np.sum(sigmas_max[:, :], axis=1), lw=3))
             plt.grid("on")
             plt.xlabel("number of peaks")
             plt.ylabel("Growth rate")
@@ -177,19 +167,13 @@ def normal_modes_compare(u_jets, flag): # pylint: disable=R0914 disable=R0915
             h.append(
                 plt.plot(
                     np.mgrid[1 : n_ks + 1],
-                    (
-                        -sigmas_max_i[:, 0]
-                        / (2.0 * np.pi * np.mgrid[1 : n_ks + 1] / x_len)
-                    ),
+                    (-sigmas_max_i[:, 0] / (2.0 * np.pi * np.mgrid[1 : n_ks + 1] / x_len)),
                 )
             )
             h.append(
                 plt.plot(
                     np.mgrid[1 : n_ks + 1],
-                    (
-                        -sigmas_max_i[:, 1]
-                        / (2.0 * np.pi * np.mgrid[1 : n_ks + 1] / x_len)
-                    ),
+                    (-sigmas_max_i[:, 1] / (2.0 * np.pi * np.mgrid[1 : n_ks + 1] / x_len)),
                     "--",
                 )
             )
@@ -211,8 +195,7 @@ def normal_modes_compare(u_jets, flag): # pylint: disable=R0914 disable=R0915
 if __name__ == "__main__":
     plt.ion()
     fig = plt.figure()
-    U_JETS = [50.0, 100.0, 150.0]
-    # u_jets=[100.]
+    U_JETS = [10.0, 15.0, 20.0]
 
     if len(sys.argv) > 1:
         FLAG = int(sys.argv[1])
@@ -224,7 +207,7 @@ if __name__ == "__main__":
     # 3, same as 1, but only first two
     normal_modes_compare(U_JETS, FLAG)
 
-    if FLAG in (2,3):
+    if FLAG in (2, 3):
         sm = plt.cm.ScalarMappable(
             cmap="viridis", norm=plt.Normalize(vmin=np.min(U_JETS), vmax=np.max(U_JETS))
         )
