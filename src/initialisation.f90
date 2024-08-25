@@ -374,7 +374,7 @@
 				if (polar_vortex) then
 					u_nudge(i)=u_jet* exp(-perturb_strength*(theta(i)-theta_jet*pi/180._wp)**2._wp &
 									/ (h_jet*pi/180._wp)**2._wp ) + &
-									u_jet*exp(-perturb_strength*(theta(i)-(theta_jet+12.6_wp)*pi/180._wp)**2._wp &
+									6.0_wp*exp(-perturb_strength*(theta(i)-(theta_jet+12.6_wp)*pi/180._wp)**2._wp &
 									/ (h_jet*pi/180._wp)**2._wp )
 				else
 					u_nudge(i)=u_jet* exp(-perturb_strength*(theta(i)-theta_jet*pi/180._wp)**2._wp &
@@ -508,7 +508,7 @@
 						
 							height(i-ipstart,j-jpstart) = &
 								height(i-ipstart,j-jpstart) + &
-								 r*1e-5_wp/height(i-ipstart,j-jpstart)
+								 r*jet_noise/height(i-ipstart,j-jpstart)
 						endif
 					endif
 
@@ -652,7 +652,7 @@
 							
 								height(i-ipstart,j-jpstart) = &
 									height(i-ipstart,j-jpstart) + &
-									 r*1e-5_wp/height(i-ipstart,j-jpstart)
+									 r*jet_noise/height(i-ipstart,j-jpstart)
 							endif
 						endif
 
