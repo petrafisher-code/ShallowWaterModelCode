@@ -30,6 +30,7 @@ username = getpass.getuser()
 CASSINI_PERSPECTIVE = False
 TIME_SCALE = 2707788
 
+# pylint: disable=duplicate-code
 nc = NetCDFFile("../../tests/output.nc")
 lons = nc.variables["phi"][:]
 lats = nc.variables["theta"][:]

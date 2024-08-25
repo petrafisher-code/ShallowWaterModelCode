@@ -27,6 +27,7 @@ username = getpass.getuser()
 
 print(os.listdir())
 
+# pylint: disable=duplicate-code
 nc = NetCDFFile("../../tests/output.nc")
 lons = nc.variables["phi"][:]
 lats = nc.variables["theta"][:]
