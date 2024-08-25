@@ -6,7 +6,7 @@
     use numerics_type
 
     private
-    public :: allocate_and_set
+    public :: allocate_and_set, add_noise
     contains
 	! ALLOCATE AND SET ARRAYS
 	!>@author
@@ -456,8 +456,12 @@
 		
 		endif
 		
-		
-		
+		! Note: Currently commented out due to adding a circular band of zeros on the v
+		! velocity. Not certain what causes this - the code within the method is essentially
+		! the same as the method and it works fine.
+ 		! ! Call the subroutine to add noise to the height field
+		! call add_noise(height, initial_winds, ip, jp, ipstart, jpstart, ipp, jpp, theta, jet_noise, polar_vortex, theta_jet, h_jet)		
+
 		! CALCULATE AND ADD NOISE	
 		call random_seed(size=k)
 		allocate(seed(1:k))
@@ -516,9 +520,7 @@
 				stop
 		end select
 		
-			
-		deallocate(seed)		
-
+		deallocate(seed)
 
 		! set halos in Coriolis array
 		call exchange_halos(comm2d, id, ipp, jpp, o_halo, f_cor)
@@ -586,6 +588,83 @@
 		stop "Stopped"
 	end if
 	end subroutine check
+
+	! ADD NOISE ROUTINE
+	subroutine add_noise(height, initial_winds, ip, jp, ipstart, jpstart, ipp, jpp, theta, jet_noise, polar_vortex, theta_jet, h_jet)
+		use random, only : random_normal
+		implicit none
+		
+		! Define types and variables
+		integer, intent(in) :: initial_winds, ip, jp, ipstart, jpstart, ipp, jpp
+		real(wp), dimension(ipp,jpp), intent(inout) :: height
+		real(wp), intent(in) :: theta(:), jet_noise, theta_jet, h_jet
+		logical, intent(in) :: polar_vortex
+
+		! locals
+		integer(i4b) :: i, j
+	
+		! for random number:
+		real(wp) :: r
+		integer(i4b) :: k
+		integer(i4b), allocatable, dimension(:) :: seed
+		
+		! Initialize the random number generator with a fixed seed
+		call random_seed(size=k)
+		allocate(seed(1:k))
+		seed(:)=2
+		call random_seed(put=seed)
+	
+		! Calculate and add noise based on the initial_winds parameter
+		select case (initial_winds)
+			case (1) ! Saturn winds
+				do j = 1, jp
+					do i = 1, ip
+						r=random_normal() ! from the Netlib
+						if((i > ipstart) .and. (i <=ipstart+ipp) &
+							.and. (j > jpstart) .and. (j <= jpstart+jpp) ) then
+							if ((theta(j-jpstart)*180._wp/PI) > 75._wp &
+								.and. (theta(j-jpstart)*180._wp/PI) < 80._wp) then
+								height(i-ipstart,j-jpstart) = &
+									height(i-ipstart,j-jpstart) + &
+									r*1000_wp*0.6e5_wp/height(i-ipstart,j-jpstart)
+							endif
+						endif
+					enddo
+				enddo
+				
+			case (2) ! Ideal jet
+				do j=1,jp
+					do i=1,ip
+						r=random_normal() ! from the Netlib
+
+						if((i > ipstart) .and. (i <=ipstart+ipp) &
+							.and. (j > jpstart) .and. (j <= jpstart+jpp) ) then
+						
+							if ((theta(j-jpstart)*180._wp/PI) > (theta_jet-h_jet*3._wp) &
+							.and. (theta(j-jpstart)*180._wp/PI) <(theta_jet+h_jet*3._wp)) then
+							
+								height(i-ipstart,j-jpstart) = &
+									height(i-ipstart,j-jpstart) + &
+									 r*jet_noise/height(i-ipstart,j-jpstart) 
+							endif
+							if (polar_vortex .and. (theta(j-jpstart)*180._wp/PI) > (theta_jet+12.6-h_jet*2._wp) &
+							.and. (theta(j-jpstart)*180._wp/PI) <(theta_jet+12.6+h_jet*2._wp)) then
+							
+								height(i-ipstart,j-jpstart) = &
+									height(i-ipstart,j-jpstart) + &
+									 r*1e-5_wp/height(i-ipstart,j-jpstart)
+							endif
+						endif
+
+					enddo
+				enddo
+				
+			case default
+				print *, 'error initial_winds', initial_winds
+				stop
+		end select
+		deallocate(seed)
+	end subroutine add_noise	
 	
 
 	end module initialisation

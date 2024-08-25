@@ -142,7 +142,8 @@
 				nm1%subgrid_model, nm1%viscous_dissipation, &
 				nm1%dissipate_h,nm1%vis,nm1%cvis, &
 				nm1%vis_eq,nm1%lat_eq, &
-				mp1%dims,mp1%id, world_process, mp1%rank, mp1%ring_comm, nm1%new_eqs, nm1%polar_vortex)
+				mp1%dims,mp1%id, world_process, mp1%rank, mp1%ring_comm, nm1%new_eqs, nm1%noise_stability_test, &
+				nm1%polar_vortex, nm1%initial_winds, nm1%u_jet, nm1%jet_noise, nm1%theta_jet, nm1%h_jet)
 
 
         ! TERMINATE MPI

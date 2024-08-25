@@ -4,6 +4,7 @@
 	!>drivers for the shallow water model
     module drivers
     use numerics_type
+	use initialisation
     !use variables
     private
     public :: model_driver
@@ -73,14 +74,16 @@
 				new_file,outputfile, output_interval, nudge, nudge_tau, &
 				subgrid_model, viscous_dissipation, dissipate_h,vis, cvis, &
 				vis_eq, lat_eq, &
-				dims,id, world_process, rank, ring_comm, new_eqs, polar_vortex)
+				dims,id, world_process, rank, ring_comm, new_eqs, noise_stability_test, &
+				polar_vortex, initial_winds, u_jet, jet_noise, theta_jet, h_jet)
 		use numerics_type
 		use mpi_module
 		use advection
 
 		implicit none
 		logical, intent(inout) :: new_file
-		logical, intent(in) :: nudge, viscous_dissipation, dissipate_h, new_eqs, polar_vortex
+		logical, intent(in) :: nudge, viscous_dissipation, dissipate_h, new_eqs, polar_vortex, &
+								noise_stability_test
 		integer(i4b), intent(in) :: ip,ipp, jp,jpp, ntim, o_halo, ipstart, jpstart, &
 									subgrid_model
 		integer(i4b), intent(in) :: id, world_process, ring_comm, rank
@@ -99,6 +102,8 @@
 		real(wp), dimension(1-o_halo:ipp+o_halo,1-o_halo:jpp+o_halo), &
 					intent(in) :: dx, dy, x, y
 		real(wp), intent(in) :: vis, nudge_tau, cvis, lat_eq, vis_eq
+		real(wp), intent(in) :: u_jet, jet_noise, theta_jet, h_jet
+		integer(i4b), intent(in) :: initial_winds
 					
 		! locals:		
 		integer(i4b) :: n, cur=1, j, error, rank2
@@ -149,7 +154,6 @@
 					recqdq, recqdp, recqdp_s, recqdq_s, redq_s, redq, rect, rect_s, cq, cq_s)
 			endif
 
-
 			! nudge
 			if (nudge) then
 				do j=1,jpp
@@ -161,65 +165,10 @@
 				enddo
 			endif
 
-			! calculate dissipation: mid-point rule
-			if (viscous_dissipation) then
-				! halo exchanges
-				call exchange_halos(ring_comm, id, ipp, jpp, o_halo, u)
-				call exchange_halos(ring_comm, id, ipp, jpp, o_halo, v)
-				
-				! dissipate u
-				call dissipation(ipp,jpp,o_halo,dt,0.5_wp*(u_old+u), delsq,re,&
-					theta,thetan,dtheta,dthetan, phi, phin, dphi, dphin, &
-					recq, cq_s, dp1, dq)
-										
-				select case(subgrid_model)
-				case (1)
-					u(1:ipp,1:jpp)=u(1:ipp,1:jpp)+dt*delsq*vis			
-				case (2)
-					call smagorinsky(ipp,jpp,o_halo,cvis,0.5_wp*(u_old+u),&
-									0.5_wp*(v_old+v),visco,re,recq, dp1, dq)
-					u(1:ipp,1:jpp)=u(1:ipp,1:jpp)+dt*delsq*visco			
-				case default
-					print *,'error subgrid ',subgrid_model
-				end select
-
-				! dissipate v
-				call dissipation(ipp,jpp,o_halo,dt,0.5_wp*(v_old+v), delsq,re,&
-					theta,thetan,dtheta,dthetan, phi, phin, dphi, dphin, &
-					recq, cq_s, dp1, dq)
-								
-				select case(subgrid_model)
-				case (1)
-					v(1:ipp,1:jpp)=v(1:ipp,1:jpp)+dt*delsq*vis
-				case (2)
-					v(1:ipp,1:jpp)=v(1:ipp,1:jpp)+dt*delsq*visco			
-				case default
-					print *,'error subgrid ',subgrid_model
-				end select
-
-
-				do j=1,jpp
-					if((theta(j) >-lat_eq*pi/180._wp) .and. &
-						 (theta(j) < lat_eq*pi/180._wp)) then
-
-						v(1:ipp,j)=v(1:ipp,j)+dt*delsq(1:ipp,j)*vis_eq* &
-							cos(theta(j)*90._wp/lat_eq)
-					endif
-				enddo
-
-				
-				! dissipate h
-				if (dissipate_h .and. (subgrid_model == 1)) then
-					! halo exchanges
-					call exchange_halos(ring_comm, id, ipp, jpp, o_halo, h)
-
-					call dissipation(ipp,jpp,o_halo,dt,0.5_wp*(h_old+h), delsq,re,&
-						theta,thetan,dtheta,dthetan, phi, phin, dphi, dphin, &
-						recq, cq_s, dp1, dq)
-						
-						
-					h(1:ipp,1:jpp)=h(1:ipp,1:jpp)+dt*delsq*vis
-				endif
+			if (noise_stability_test .and. n == INT(ntim / 4.0)) then
+				print *, "Adding noise now"
+				call add_noise(h, initial_winds, ip, jp, ipstart, jpstart, ipp, jpp, theta, 0.1_wp, polar_vortex, theta_jet, h_jet)
+				call add_noise(u, initial_winds, ip, jp, ipstart, jpstart, ipp, jpp, theta, 0.1_wp, polar_vortex, theta_jet, h_jet)
 			endif
 
 			! halo exchanges
