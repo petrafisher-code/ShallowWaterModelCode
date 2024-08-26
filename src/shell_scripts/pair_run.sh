@@ -24,8 +24,10 @@ for (( i=0; i<ELEMENTS1; i++)); do
 			# Runs with the hm process switched on:
 	 		echo "${NAME1} = ${ARRAY1[${i}]},    ${NAME2} = ${ARRAY2[${j}]}"
             sed -e "s|output.nc|/output_${i}_${j}.nc|" ../config/namelist.in > ../config/namelist.tmp
-            sed -e "s/${NAME1}=1.0/${NAME1}=${ARRAY1[${i}]}/" ../config/namelist.tmp > ../config/namelist.tmp2	
-            sed -e "s/${NAME2}=1566./${NAME2}=${ARRAY2[${j}]}/" ../config/namelist.tmp2 > ../config/namelist.run
+            # sed -e "s/${NAME1}=1.0/${NAME1}=${ARRAY1[${i}]}/" ../config/namelist.tmp > ../config/namelist.tmp2	
+            # sed -e "s/${NAME2}=1566./${NAME2}=${ARRAY2[${j}]}/" ../config/namelist.tmp2 > ../config/namelist.run
+            sed -e "s/${NAME1}=86.5/${NAME1}=${ARRAY1[${i}]}/" ../config/namelist.tmp > ../config/namelist.tmp2	
+            sed -e "s/${NAME2}=7./${NAME2}=${ARRAY2[${j}]}/" ../config/namelist.tmp2 > ../config/namelist.run
  						
             mpiexec -n 8 ./main.exe ../config/namelist.run > /tmp/std.out
             rm "../config/namelist.tmp"
