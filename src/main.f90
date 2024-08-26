@@ -112,8 +112,8 @@
 				grid1%ipstart, grid1%jpstart, grid1%coords, &
 				nm1%inputfile, nm1%add_random_height_noise, &
 				nm1%initially_geostrophic, nm1%initial_winds, &
-				nm1%u_jet, nm1%jet_noise, nm1%theta_jet, nm1%h_jet, &
-				nm1%perturb_strength, nm1%ip, nm1%jp, &
+				nm1%u_jet, nm1%u_vortex, nm1%jet_noise, nm1%theta_jet, nm1%h_jet, &
+				nm1%h_vortex, nm1%perturb_strength, nm1%ip, nm1%jp, &
 				nm1%wind_factor, nm1%wind_shift, nm1%wind_reduce, nm1%runtime, &
 				nm1%dt, nm1%grav, nm1%rho, nm1%re, &
 				nm1%rotation_period_hours, nm1%scale_height, nm1%slat, &
@@ -144,7 +144,7 @@
 				nm1%vis_eq,nm1%lat_eq, &
 				mp1%dims,mp1%id, world_process, mp1%rank, mp1%ring_comm, nm1%new_eqs, nm1%noise_stability_test, &
 				nm1%noise_duration, nm1%polar_vortex, nm1%initial_winds, nm1%u_jet, nm1%jet_noise, &
-				nm1%theta_jet, nm1%h_jet)
+				nm1%theta_jet, nm1%h_jet, nm1%h_vortex)
 
 
         ! TERMINATE MPI
