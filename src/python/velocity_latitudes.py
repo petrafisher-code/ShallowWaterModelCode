@@ -27,7 +27,7 @@ u = nc.variables["u"][:]
 
 # Define the latitude range (65 to 86.5 degrees)
 LAT_MIN = 65
-LAT_MAX = 86.5
+LAT_MAX = round(lats[-1]*180/np.pi, 1)
 
 if not os.path.exists("../../output/velocities"):
     os.mkdir("../../output/velocities")
@@ -57,12 +57,13 @@ else:
     plt.plot(average_u, selected_lats, color="purple", marker="o")
     plt.ylabel("Latitude (Degrees)", fontsize=FONTSIZE)
     plt.xlabel(r"Average Zonal Velocity ($\times 20 \, \text{ms}^{-1}$)", fontsize=FONTSIZE)
-    plt.title("Average Zonal Velocities at Each Latitude (65 to 86.5 degrees)", fontsize=FONTSIZE)
+    plt.title(f"Average Zonal Velocities at Each Latitude (65 to ${LAT_MAX}$ degrees)",\
+               fontsize=FONTSIZE)
     plt.grid(True)
 
     # Set tick parameters
     plt.xticks(fontsize=FONTSIZE)
     plt.yticks(fontsize=FONTSIZE)
 
-    plt.savefig("../../output/velocities/velocity_latitudes.pdf")
+    plt.savefig("../../output/velocities/velocity_latitudes.png")
     plt.show()
