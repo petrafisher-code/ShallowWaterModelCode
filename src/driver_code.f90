@@ -75,7 +75,8 @@
 				subgrid_model, viscous_dissipation, dissipate_h,vis, cvis, &
 				vis_eq, lat_eq, &
 				dims,id, world_process, rank, ring_comm, new_eqs, noise_stability_test, &
-				polar_vortex, initial_winds, u_jet, jet_noise, theta_jet, h_jet)
+				noise_duration, polar_vortex, initial_winds, u_jet, jet_noise, &
+				theta_jet, h_jet)
 		use numerics_type
 		use mpi_module
 		use advection
@@ -103,19 +104,26 @@
 					intent(in) :: dx, dy, x, y
 		real(wp), intent(in) :: vis, nudge_tau, cvis, lat_eq, vis_eq
 		real(wp), intent(in) :: u_jet, jet_noise, theta_jet, h_jet
-		integer(i4b), intent(in) :: initial_winds
+		integer(i4b), intent(in) :: initial_winds, noise_duration
 					
 		! locals:		
-		integer(i4b) :: n, cur=1, j, error, rank2
+		integer(i4b) :: n, cur=1, j, error, rank2, i
 		real(wp) :: time, time_last_output, output_time
 		real(wp), dimension(1-o_halo:ipp+o_halo,1-o_halo:jpp+o_halo) :: &
 				u_old, v_old, h_old
 		real(wp), dimension(1:ipp,1:jpp) :: delsq, vort, visco
+		integer(i4b), allocatable :: noise_points(:)
 		
 
 		time_last_output=-output_interval
 		output_time=output_interval
 		rank2=dims(1)*dims(2)
+
+		! allocate and populate the noise array
+		allocate(noise_points(noise_duration))
+		do i = 1, noise_duration
+			noise_points(i) = INT(ntim/4) + noise_duration
+		end do
 
 		! time-loop
 		do n=1,ntim	
@@ -165,11 +173,16 @@
 				enddo
 			endif
 
-			if (noise_stability_test .and. n == INT(ntim / 4.0)) then
-				print *, "Adding noise now"
-				call add_noise(h, initial_winds, ip, jp, ipstart, jpstart, ipp, jpp, theta, 0.1_wp, polar_vortex, theta_jet, h_jet)
-				call add_noise(u, initial_winds, ip, jp, ipstart, jpstart, ipp, jpp, theta, 0.1_wp, polar_vortex, theta_jet, h_jet)
-			endif
+			noise_points(1) = INT(ntim / 4.0)
+
+			! Loop through the noise points to check if the current timestep matches any of them
+			do i = 1, noise_duration
+				if (noise_stability_test .and. n == noise_points(i)) then
+					print *, "Adding noise now at timestep ", n
+					call add_noise(h, initial_winds, ip, jp, ipstart, jpstart, ipp, jpp, theta, jet_noise, polar_vortex, theta_jet, h_jet)
+					call add_noise(u, initial_winds, ip, jp, ipstart, jpstart, ipp, jpp, theta, jet_noise, polar_vortex, theta_jet, h_jet)
+				endif
+			end do
 
 			! halo exchanges
 			call exchange_halos(ring_comm, id, ipp, jpp, o_halo, h)
@@ -177,6 +190,7 @@
 			call exchange_halos(ring_comm, id, ipp, jpp, o_halo, v)
 
 		enddo
+		deallocate(noise_points)
 	end subroutine model_driver
 	
 	
