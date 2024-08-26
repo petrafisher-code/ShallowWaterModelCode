@@ -76,7 +76,7 @@
 				vis_eq, lat_eq, &
 				dims,id, world_process, rank, ring_comm, new_eqs, noise_stability_test, &
 				noise_duration, polar_vortex, initial_winds, u_jet, jet_noise, &
-				theta_jet, h_jet)
+				theta_jet, h_jet, h_vortex)
 		use numerics_type
 		use mpi_module
 		use advection
@@ -103,7 +103,7 @@
 		real(wp), dimension(1-o_halo:ipp+o_halo,1-o_halo:jpp+o_halo), &
 					intent(in) :: dx, dy, x, y
 		real(wp), intent(in) :: vis, nudge_tau, cvis, lat_eq, vis_eq
-		real(wp), intent(in) :: u_jet, jet_noise, theta_jet, h_jet
+		real(wp), intent(in) :: u_jet, jet_noise, theta_jet, h_jet, h_vortex
 		integer(i4b), intent(in) :: initial_winds, noise_duration
 					
 		! locals:		

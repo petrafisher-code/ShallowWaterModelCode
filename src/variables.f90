@@ -42,8 +42,8 @@
             			runtime, dt, output_interval, &
             			grav, rho, Re, rotation_period_hours, scale_height, &
             			slat, nlat, slat_thresh, nlat_thresh, nudge_timescale, &
-            			u_jet, jet_noise, theta_jet, h_jet, perturb_strength, cvis, &
-						vis_eq, lat_eq
+            			u_jet, u_vortex, jet_noise, theta_jet, h_jet, h_vortex, &
+						perturb_strength, cvis, vis_eq, lat_eq
         end type namelist_input
 
 

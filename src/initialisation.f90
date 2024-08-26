@@ -62,6 +62,7 @@
 	!>@param[in] initially_geostrophic - set to geostrophic balance
 	!>@param[in] initial_winds - flag: saturn, or jet?
 	!>@param[in] ideal jet parameters: u_jet, jet_noise, theta_jet, h_jet
+	!>@param[in] ideal polar vortex parameters: u_vortex, h_vortex
 	!>@param[in] perturbation parameters: perturb_strength
 	!>@param[in] ip - global ip (all pes)
 	!>@param[in] jp - global jp (all pes)
@@ -94,8 +95,8 @@
 				u_nudge, o_halo, ipstart, jpstart, coords, &
 				inputfile, add_random_height_noise, &
 				initially_geostrophic, initial_winds, &
-				u_jet, jet_noise, theta_jet, h_jet, perturb_strength, &
-				ip, jp, &
+				u_jet, u_vortex, jet_noise, theta_jet, h_jet, &
+				h_vortex, perturb_strength, ip, jp, &
 				wind_factor, wind_shift, wind_reduce, runtime, &
 				dt_nm, grav, rho_nm, re_nm, &
 				rotation_period_hours, scale_height, slat, nlat, &
@@ -129,7 +130,8 @@
 							dt_nm, grav, rho_nm, re_nm, &
 							rotation_period_hours, scale_height, &
 							slat_thresh, nlat_thresh, &
-							u_jet, jet_noise, theta_jet, h_jet, perturb_strength
+							u_jet, u_vortex, jet_noise, theta_jet, h_jet, &
+							h_vortex, perturb_strength
 		real(wp), intent(inout) :: slat, nlat
 		integer(i4b), dimension(2), intent(in) :: dims
 		integer(i4b), dimension(2), intent(inout) :: coords
@@ -374,10 +376,10 @@
 				if (polar_vortex) then
 					u_nudge(i)=u_jet* exp(-perturb_strength*(theta(i)-theta_jet*pi/180._wp)**2._wp &
 									/ (h_jet*pi/180._wp)**2._wp ) + &
-									6.0_wp*exp(-perturb_strength*(theta(i)-(theta_jet+12.6_wp)*pi/180._wp)**2._wp &
-									/ (h_jet*pi/180._wp)**2._wp )
+									u_vortex*exp(-perturb_strength*(theta(i)-(theta_jet+12.6_wp)*pi/180._wp)**2._wp &
+									/ (h_vortex*pi/180._wp)**2._wp )
 				else
-					u_nudge(i)=u_jet* exp(-perturb_strength*(theta(i)-theta_jet*pi/180._wp)**2._wp &
+					u_nudge(i)=u_jet*exp(-perturb_strength*(theta(i)-theta_jet*pi/180._wp)**2._wp &
 					/ (h_jet*pi/180._wp)**2._wp )
 				endif
 			enddo
@@ -503,8 +505,8 @@
 								height(i-ipstart,j-jpstart) + &
 								 r*jet_noise/height(i-ipstart,j-jpstart) 
 						endif
-						if (polar_vortex .and. (theta(j-jpstart)*180._wp/PI) > (theta_jet+12.6-h_jet*2._wp) &
-						.and. (theta(j-jpstart)*180._wp/PI) <(theta_jet+12.6+h_jet*2._wp)) then
+						if (polar_vortex .and. (theta(j-jpstart)*180._wp/PI) > (theta_jet+12.6-h_vortex*2._wp) &
+						.and. (theta(j-jpstart)*180._wp/PI) <(theta_jet+12.6+h_vortex*2._wp)) then
 						
 							height(i-ipstart,j-jpstart) = &
 								height(i-ipstart,j-jpstart) + &
