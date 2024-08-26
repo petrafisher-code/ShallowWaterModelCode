@@ -57,7 +57,8 @@ else:
     plt.plot(average_u, selected_lats, color="purple", marker="o")
     plt.ylabel("Latitude (Degrees)", fontsize=FONTSIZE)
     plt.xlabel(r"Average Zonal Velocity ($\times 20 \, \text{ms}^{-1}$)", fontsize=FONTSIZE)
-    plt.title(f"Average Zonal Velocities at Each Latitude (65 to ${LAT_MAX}$ degrees)", fontsize=FONTSIZE)
+    plt.title(f"Average Zonal Velocities at Each Latitude (65 to ${LAT_MAX}$ degrees)",\
+               fontsize=FONTSIZE)
     plt.grid(True)
 
     # Set tick parameters
