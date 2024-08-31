@@ -14,6 +14,8 @@ from scipy.signal import find_peaks
 # (pylint can't find Dataset in the netCDF4 package for some reason)
 from netCDF4 import Dataset as NetCDFFile
 
+# TODO: FIX AND TEST THIS MODULE pylint: disable=W0511
+
 TIME_SCALE = 2707788
 
 nc = NetCDFFile("../../tests/output.nc")
