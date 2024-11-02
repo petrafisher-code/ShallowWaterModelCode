@@ -43,7 +43,7 @@ def normal_modes_compare(u_jets, flag):  # pylint: disable=R0914 disable=R0915
     lat_low = 65  # lowest
     re = 5.4155760e7  # radius of saturn in this region (due to squashed spheriod)
     h_jet = 1.0  # standard deviation of jet
-    lat_jet = 75.9  # latitude of the jet
+    lat_jet = 75.8  # latitude of the jet
     n_ks = 36  # calculate the growth factor for this many k-values
 
     for i, u_jet in enumerate(u_jets):
