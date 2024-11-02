@@ -54,7 +54,8 @@ for ujet, file_path in zip(ujet_values, file_paths):
     # Plotting the maximum u velocity against time
     time_days = time / 86400  # Convert time to days
     plt.plot(
-        time_days, max_u_per_timestep, label=r"$u_{\text{jet}}$" + f" = {ujet} ($\\times 20 \\, \\text{{ms}}^{{-1}}$)"
+        time_days, max_u_per_timestep, label=r"$u_{\text{jet}}$" + 
+        f" = {ujet} ($\\times 20 \\, \\text{{ms}}^{{-1}}$)"
     )
     print(max_u_per_timestep[-1])
 

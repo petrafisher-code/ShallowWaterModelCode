@@ -77,11 +77,11 @@ plt.ylim((-2e7, 2e7))
 max_h_magnitude = np.max(np.abs(h))
 scale = 10 ** np.floor(np.log10(max_h_magnitude))
 if scale != 1.0:
-    scaled_label = f"h (10$^{int(np.log10(scale))}$ m)"
+    SCALED_LABEL = f"h (10$^{int(np.log10(scale))}$ m)"
 else:
-    scaled_label = r"$h$"  # pylint: disable=C0103
+    SCALED_LABEL = r"$h$"  # pylint: disable=C0103
 cbar = plt.colorbar(hmap)
-cbar.set_label(scaled_label, fontsize=FONTSIZE)
+cbar.set_label(SCALED_LABEL, fontsize=FONTSIZE)
 
 # Formatter so the colourbar has the correct notation
 formatter = FuncFormatter(lambda x, _: f"{x/scale:.2f}")

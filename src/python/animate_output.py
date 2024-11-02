@@ -46,7 +46,7 @@ if not os.path.exists("../../output/animations"):
     os.mkdir("../../output/animations")
 
 
-def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, title_var):  # pylint: disable=R0913
+def make_maps(data, ax, vmin_var, vmax_var, colourbar_label_var, title_var):  # pylint: disable=R0917
     """
     Generate an individual map plot with specified colorbar settings and labels.
 

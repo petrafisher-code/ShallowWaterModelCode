@@ -7,6 +7,7 @@ from a single NetCDF file. One timestep equals 50 hours.
 
 NOTE: This file is a DRAFT.
 """
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
@@ -22,6 +23,7 @@ HOURS_IN_A_DAY = 24  # Number of hours in a day
 SIZE_MIN = 1e-5  # Minimum size to consider a peak significant
 HOURS_PER_TIMESTEP = 2  # One timestep equals 50 hours
 
+
 def load_data(file_name):
     """
     Loads velocity and time data from a NetCDF file.
@@ -30,13 +32,15 @@ def load_data(file_name):
     file_name (str): The name of the NetCDF file.
 
     Returns:
-    tuple: Tuple containing the velocity data at the target latitude, latitude array, 
+    tuple: Tuple containing the velocity data at the target latitude, latitude array,
     and time array.
     """
-    with NetCDFFile(file_name, 'r') as nc:
+    with NetCDFFile(file_name, "r") as nc:
         lats = nc.variables["theta"][:]
         v = nc.variables["v"][:]
-        time = nc.variables["time"][:]*TIME_SCALE/HOURS_PER_TIMESTEP  # Convert time to timesteps
+        time = (
+            nc.variables["time"][:] * TIME_SCALE / HOURS_PER_TIMESTEP
+        )  # Convert time to timesteps
 
         # Find the index of the latitude closest to the target latitude
         lat_idx = np.abs(lats - TARGET_LATITUDE).argmin()
@@ -45,6 +49,7 @@ def load_data(file_name):
         v_at_latitude = v[:, lat_idx, :]
 
     return v_at_latitude, lats, time
+
 
 def track_peak_drift(file_name):
     """
@@ -77,7 +82,7 @@ def track_peak_drift(file_name):
 
     # Calculate the difference in peak positions between consecutive timesteps
     for i in range(1, len(peak_positions)):
-        delta_positions[i-1] = peak_positions[i] - peak_positions[i-1]
+        delta_positions[i - 1] = peak_positions[i] - peak_positions[i - 1]
 
     # Adjust delta positions to handle periodic boundary conditions in longitude (0 to 360 degrees)
     delta_positions[delta_positions > 180] -= 360
@@ -103,6 +108,7 @@ def track_peak_drift(file_name):
         print(f"Final Drift Rate: {drift_rates[-1]:.10f} degrees/hour")
     else:
         print("No drift rates calculated.")
+
 
 # File to analyze
 FILE_NAME = "../../tests/output_default_90days.nc"
