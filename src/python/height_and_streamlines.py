@@ -23,6 +23,8 @@ from netCDF4 import Dataset as NetCDFFile
 
 matplotlib.use("Agg")
 
+FONTSIZE = 15
+
 username = getpass.getuser()
 
 print(os.listdir())
@@ -75,11 +77,11 @@ plt.ylim((-2e7, 2e7))
 max_h_magnitude = np.max(np.abs(h))
 scale = 10 ** np.floor(np.log10(max_h_magnitude))
 if scale != 1.0:
-    scaled_label = f"h (10$^{int(np.log10(scale))}$ m)"
+    SCALED_LABEL = f"h (10$^{int(np.log10(scale))}$ m)"
 else:
-    scaled_label = "h (10 m)"  # pylint: disable=C0103
+    SCALED_LABEL = r"$h$"  # pylint: disable=C0103
 cbar = plt.colorbar(hmap)
-cbar.set_label(scaled_label)
+cbar.set_label(SCALED_LABEL, fontsize=FONTSIZE)
 
 # Formatter so the colourbar has the correct notation
 formatter = FuncFormatter(lambda x, _: f"{x/scale:.2f}")
@@ -89,7 +91,10 @@ cbar.ax.yaxis.set_major_formatter(formatter)
 plt.ticklabel_format(style="sci", scilimits=(0, 0))
 plt.gca().ticklabel_format(useMathText=True)
 
-plt.title(f"Height and Velocity Streamlines at t={time[-1]/(86400):.2f} days")
+plt.title(f"Height and Velocity Streamlines at t={time[-1]/(86400):.0f} days", fontsize=FONTSIZE)
+plt.xticks(fontsize=FONTSIZE)
+plt.yticks(fontsize=FONTSIZE)
+cbar.ax.tick_params(labelsize=FONTSIZE)
 
 if not os.path.exists("../../output/frames"):
     os.mkdir("../../output/frames")

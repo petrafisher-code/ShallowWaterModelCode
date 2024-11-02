@@ -20,14 +20,14 @@ TIME_SCALE = 2707788
 FONTSIZE = 15
 
 # Load the NetCDF file
-nc = NetCDFFile("../../tests/output.nc")
+nc = NetCDFFile("../../tests/50years.nc")
 
 lats = nc.variables["theta"][:]
 u = nc.variables["u"][:]
 
 # Define the latitude range (65 to 86.5 degrees)
 LAT_MIN = 65
-LAT_MAX = round(lats[-1]*180/np.pi, 1)
+LAT_MAX = round(lats[-1] * 180 / np.pi, 1)
 
 if not os.path.exists("../../output/velocities"):
     os.mkdir("../../output/velocities")
@@ -52,13 +52,16 @@ else:
     # Calculate the average u velocity at each latitude
     average_u = np.mean(selected_u, axis=1)
 
+    print(average_u)
+
     # Plotting the average u velocity against latitude
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(8, 7))
     plt.plot(average_u, selected_lats, color="purple", marker="o")
     plt.ylabel("Latitude (Degrees)", fontsize=FONTSIZE)
     plt.xlabel(r"Average Zonal Velocity ($\times 20 \, \text{ms}^{-1}$)", fontsize=FONTSIZE)
-    plt.title(f"Average Zonal Velocities at Each Latitude (65 to ${LAT_MAX}$ degrees)",\
-               fontsize=FONTSIZE)
+    plt.title(
+        f"Average Zonal Velocities at Each Latitude (65 to ${LAT_MAX}$ degrees)", fontsize=FONTSIZE
+    )
     plt.grid(True)
 
     # Set tick parameters
