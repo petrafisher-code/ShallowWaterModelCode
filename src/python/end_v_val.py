@@ -32,7 +32,7 @@ lats = nc.variables["theta"][:]  # Latitudes in radians
 v = nc.variables["v"][:]  # v velocity component
 time = nc.variables["time"][:] * TIME_SCALE
 
-# Convert 75.9 degrees to radians
+# Convert 75.8 degrees to radians
 target_latitude_radians = np.radians(75.8)
 
 # Find the index corresponding to latitude 75.8 degrees in radians

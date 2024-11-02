@@ -55,7 +55,7 @@ for (( i=0; i<ELEMENTS; i++)); do
     elif test "${NAME}" = "h_jet"; then
         sed -e "s/${NAME}=1.0/${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
     elif test "${NAME}" = "theta_jet"; then
-        sed -e "s/${NAME}=75.9/${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
+        sed -e "s/${NAME}=75.8/${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
     elif test "${NAME}" = "jet_noise"; then
         sed -e "s/${NAME}=0.01/${NAME}=${ARRAY[${i}]}/" ../config/namelist.tmp > ../config/namelist.run	
     elif test "${NAME}" = "perturb_strength"; then
