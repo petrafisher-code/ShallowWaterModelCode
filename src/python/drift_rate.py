@@ -18,7 +18,7 @@ from netCDF4 import Dataset as NetCDFFile
 
 # Constants
 TIME_SCALE = 2707788
-TARGET_LATITUDE = 75.9
+TARGET_LATITUDE = 75.8
 HOURS_IN_A_DAY = 24  # Number of hours in a day
 SIZE_MIN = 1e-5  # Minimum size to consider a peak significant
 HOURS_PER_TIMESTEP = 2  # One timestep equals 50 hours
