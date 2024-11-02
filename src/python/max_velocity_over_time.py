@@ -6,7 +6,6 @@ This module processes data from multiple NetCDF files to display the maximum
 zonal velocity (u) within the latitude band 70 to 80 degrees over time.
 Each file corresponds to a different ujet value, and the results are plotted together.
 """
-
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -55,8 +54,9 @@ for ujet, file_path in zip(ujet_values, file_paths):
     # Plotting the maximum u velocity against time
     time_days = time / 86400  # Convert time to days
     plt.plot(
-        time_days, max_u_per_timestep, label=f"ujet = {ujet} ($\\times 20 \\, \\text{{ms}}^{{-1}}$)"
+        time_days, max_u_per_timestep, label=r"$u_{\text{jet}}$" + f" = {ujet} ($\\times 20 \\, \\text{{ms}}^{{-1}}$)"
     )
+    print(max_u_per_timestep[-1])
 
 # Configure the plot
 plt.xlabel("Time (days)", fontsize=FONTSIZE)
