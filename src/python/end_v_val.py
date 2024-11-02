@@ -6,8 +6,6 @@ This module processes meridional velocity data at a target latitude (75.8 degree
 a NetCDF file. It extracts min and max velocity values at the first, 5-day, and last
 timesteps and plots velocity profiles across longitudes to analyze changes over time.
 """
-import getpass
-import warnings
 
 import numpy as np
 import matplotlib
@@ -22,13 +20,8 @@ from netCDF4 import Dataset as NetCDFFile
 matplotlib.rcParams["font.family"] = "DejaVu Serif"
 matplotlib.rcParams["font.serif"] = "DejaVu Serif"
 
-# Set the font size variable
+# Set constants
 FONTSIZE = 20
-
-matplotlib.use("Agg")
-warnings.filterwarnings("ignore")
-username = getpass.getuser()
-
 CASSINI_PERSPECTIVE = False
 TIME_SCALE = 2707788
 
