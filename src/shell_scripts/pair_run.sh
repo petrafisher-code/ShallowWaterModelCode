@@ -50,12 +50,12 @@ for (( i=0; i<ELEMENTS1; i++)); do
             mv "../../output/frames/frame.png" "../../output/streamlines/streamlines_${NAME1}_${ARRAY1[${i}]}_${NAME2}_${ARRAY2[${j}]}.png" 
 
             # create height and streamlines figure
-            echo "Creating velocity latitude figure"
-            python3 velocity_latitudes.py
-            mv "../../output/velocities/velocity_latitudes.png" "../../output/velocities/velocity_latitudes_${NAME1}_${ARRAY1[${i}]}_${NAME2}_${ARRAY2[${j}]}.png"
+            # echo "Creating velocity latitude figure"
+            # python3 velocity_latitudes.py
+            # mv "../../output/velocities/velocity_latitudes.png" "../../output/velocities/velocity_latitudes_${NAME1}_${ARRAY1[${i}]}_${NAME2}_${ARRAY2[${j}]}.png"
 
             # rename output.nc file for storage
-            mv "../../tests/output.nc" "../../tests/output_${NAME1}_${ARRAY1[${i}]}_${NAME2}_${ARRAY2[${j}]}.nc"
+            # mv "../../tests/output.nc" "../../tests/output_${NAME1}_${ARRAY1[${i}]}_${NAME2}_${ARRAY2[${j}]}.nc"
             cd ..
  			
 	done

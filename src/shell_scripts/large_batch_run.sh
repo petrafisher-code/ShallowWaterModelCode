@@ -2,7 +2,7 @@
 # Batch running - large
 
 
-ALL_NAMES=("u_jet" "h_jet" "theta_jet" "jet_noise" "perturb_strength")
+ALL_NAMES=("u_jet" "h_jet" "theta_jet" "jet_noise")
 ELEMENTS_ALL_NAMES=${#ALL_NAMES[@]} # elements in array
 
 cd .. && make
@@ -10,8 +10,7 @@ cd .. && make
 # rm ../output/animations/animation.mp4
 
 for((k=0; k<ELEMENTS_ALL_NAMES; k++)); do
-    cd ~/Documents/Petra/ShallowWaterModelCode/src
-
+    # cd ~/Documents/Petra/ShallowWaterModelCode/src
     NAME=${ALL_NAMES[${k}]}
     if test "${NAME}" = "u_jet"; then
         ARRAY=(6. 6.5 7. 7.5 8. 8.5 9. 9.5 10. 10.5 11. 11.5 12. 12.5 13. 13.5 14. 14.4 15. 15.5 16. 16.5 17. 17.5 18. 18.5 19. 19.5 20. 21. 22. 23. 24. 25. 26. 27. 28. 29. 30. 31. 32.)
@@ -58,7 +57,7 @@ for((k=0; k<ELEMENTS_ALL_NAMES; k++)); do
         mv "../../output/frames/frame.png" "../../output/streamlines/streamlines_${NAME}_${ARRAY[${i}]}.png" 
 
         # rename output.nc file for storage
-        mv "../../tests/output.nc" "../../tests/output_${NAME}_${ARRAY[${i}]}.nc"
+        # mv "../../tests/output.nc" "../../tests/output_${NAME}_${ARRAY[${i}]}.nc"
         cd ..
     done
 done
