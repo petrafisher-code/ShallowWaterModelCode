@@ -40,8 +40,7 @@ ARRAY=(86.5 86.6 86.7 86.8 86.9 87.0 87.1 87.2 87.3 87.4 87.5 87.6 87.7 87.8 87.
 
 ELEMENTS=${#ARRAY[@]} # elements in array
 
-cd ..
-# make
+cd .. && make
 
 rm ../output/animations/animation.gif
 rm ../output/animations/animation.mp4
@@ -85,6 +84,6 @@ for (( i=0; i<ELEMENTS; i++)); do
     mv "../../output/frames/frame.png" "../../output/streamlines/streamlines_${NAME}_${ARRAY[${i}]}.png" 
 
     # rename output.nc file for storage
-    mv "../../tests/output.nc" "../../tests/output_${NAME}_${ARRAY[${i}]}.nc"
+    # mv "../../tests/output.nc" "../../tests/output_${NAME}_${ARRAY[${i}]}.nc"
     cd ..
 done
