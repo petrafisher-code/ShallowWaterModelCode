@@ -5,7 +5,7 @@ RUN groupadd -r myuser && useradd -r -g myuser myuser
 
 WORKDIR /app
 
-RUN apt update
+RUN apt-get update
 RUN apt install build-essential -y
 
 RUN apt install gfortran -y
