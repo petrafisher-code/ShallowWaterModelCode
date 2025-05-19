@@ -15,6 +15,8 @@ RUN apt install libnetcdff-dev -y
 
 RUN apt install libopenmpi-dev -y
 
+RUN apt-get clean
+
 COPY . .
 
 RUN nc-config --all
